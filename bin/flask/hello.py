@@ -7,13 +7,26 @@ import pprint
 
 import facebook
 import requests
+from bs4 import BeautifulSoup
+
 
 os.environ['ACCESS_TOKEN'] = "EAACEdEose0cBALjazJUOfxtAzT5VkqmUFhjTnvvfQFccouFOlRvwANV5MXYMe8xZAlkQoZC4FS2dPnf4S7S7gQs76jN41Hp0Gs3IZCCxgBl16ODM3yCM3iVbF6vwGuYr4qfNhQzZCPl98eoNFWDhEp93JMBftLLWjuuSZARTiZAmCiJT5wfENUZCsCuGBQGjLgZD"
 
 app = Flask(__name__)
 
 @app.route('/')
-def hello_world():
+def scrape():
+    #soup = BeautifulSoup(open("index.html"))  #make these set of codes dynamic (to faceboook)
+    #BE CAREFUL, python is sensitive to indentation
+    soup = BeautifulSoup("<html>data</html>")
+
+    #LOOP ALL POSTS IN FACEBOOK
+        #CHECK IF A POST CONTAINS "NEWS" KEYWORDS (declare a list variable of all keywords)
+            #IF HAS
+                #GET THESE DETAILS:  details of one poster, date, keywords matched and text in the post
+                    #CLEAN THE DATA by removing unnecessary characters
+
+    print (soup.html);
     return 'This is a sample Flask application!'
 
 @app.route('/fb')
