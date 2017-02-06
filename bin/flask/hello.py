@@ -10,7 +10,9 @@ import requests
 from bs4 import BeautifulSoup
 
 
-os.environ['ACCESS_TOKEN'] = "EAACEdEose0cBALjazJUOfxtAzT5VkqmUFhjTnvvfQFccouFOlRvwANV5MXYMe8xZAlkQoZC4FS2dPnf4S7S7gQs76jN41Hp0Gs3IZCCxgBl16ODM3yCM3iVbF6vwGuYr4qfNhQzZCPl98eoNFWDhEp93JMBftLLWjuuSZARTiZAmCiJT5wfENUZCsCuGBQGjLgZD"
+os.environ['ACCESS_TOKEN'] = "EAACEdEose0cBAOZBTyWh3nULVojEUAZB01ZBt6QZBkf86hIz26PDNZB2DOdEpm0VPPhWfTg31nEyG2MJsRVzqxrRbffADtbIBwlYw4jVQpSJjZBI6qdU88qlYVRnQAF2RsyNi34PplbMwyNmPU8fK2ZCFBMAHBPG5WGf0oPoJXMZCvwlaAtCKY8IxSOPDskP2K8ZD"
+os.environ['APP_ID'] = "417532035253979"
+os.environ['APP_SECRET'] = "bdabd42f7762399c3bdc91ebbb336178"
 
 app = Flask(__name__)
 
@@ -61,9 +63,9 @@ def some_action():
 
     # You'll need an access token here to do anything.  You can get a temporary one
     # here: https://developers.facebook.com/tools/explorer/
-    access_token = os.environ['ACCESS_TOKEN']
+    access_token = get_fb_token()
     # Look at Bill Gates's profile for this example by using his Facebook id.
-    user = 'BillGates'
+    user = 'TaylorSwift'
 
     graph = facebook.GraphAPI(access_token)
     profile = graph.get_object(user)
@@ -87,4 +89,14 @@ def some_action():
     #    post_text = post_text + str(post)
     return str(posts['data'])
 
-app.run(port=8080)
+@app.route('/token')
+def get_fb_token():           
+    payload = {'grant_type': 'client_credentials', 'client_id': os.environ['APP_ID'], 'client_secret': os.environ['APP_SECRET']}
+    file = requests.post('https://graph.facebook.com/oauth/access_token?', params = payload)
+    #print file.text #to test what the FB api responded with    
+    result = file.text.split("=")[1]
+    #print file.text #to test the TOKEN
+    return result
+
+app.run(debug=True)
+app.run(port=8082)
