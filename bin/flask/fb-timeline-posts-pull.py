@@ -21,7 +21,7 @@ def hello_world():
 @app.route('/fb')
 def fb_scrapper():
     # get Facebook access token from environment variable
-    ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
+    ACCESS_TOKEN = get_fb_token()
 
     # build the URL for the API endpoint
     host = "https://graph.facebook.com"
@@ -40,7 +40,7 @@ def fb_scrapper():
     return resp
 
 @app.route('/posts')
-def some_action():
+def get_timeline_posts():
     
     """ Here you might want to do something with each post. E.g. grab the
     post's message (post['message']) or the post's picture (post['picture']).
@@ -71,9 +71,10 @@ def some_action():
 #            # When there are no more pages (['paging']['next']), break from the
 #            # loop and end the script.
 #            break
-    post_text = ""
-    #for post in posts['data']:
-    #    post_text = post_text + str(post)
+#    post_text = ""
+    for post in posts['data']:
+       print(post)
+
     return str(posts['data'])
 
 @app.route('/token')
