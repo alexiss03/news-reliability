@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template, request
 
 import os
 import json
@@ -7,8 +7,10 @@ import pprint
 
 import facebook
 import requests
+import re
 from bs4 import BeautifulSoup
-
+#from sklearn.feature_extraction.text import TfidfVectorizer
+#import numpy
 
 os.environ['ACCESS_TOKEN'] = "EAACEdEose0cBAOZBTyWh3nULVojEUAZB01ZBt6QZBkf86hIz26PDNZB2DOdEpm0VPPhWfTg31nEyG2MJsRVzqxrRbffADtbIBwlYw4jVQpSJjZBI6qdU88qlYVRnQAF2RsyNi34PplbMwyNmPU8fK2ZCFBMAHBPG5WGf0oPoJXMZCvwlaAtCKY8IxSOPDskP2K8ZD"
 os.environ['APP_ID'] = "417532035253979"
@@ -16,20 +18,13 @@ os.environ['APP_SECRET'] = "bdabd42f7762399c3bdc91ebbb336178"
 
 app = Flask(__name__)
 
+#add here all the legitimate news sites, we will scrape their posts and will be the baseline/standard of a reliable news
+legitnews = ['TaylorSwift', 'ABSCBN', 'GMA', 'RAPPLER', 'CNN',];
+
 @app.route('/')
-def scrape():
-    #soup = BeautifulSoup(open("index.html"))  #make these set of codes dynamic (to faceboook)
-    #BE CAREFUL, python is sensitive to indentation
-    soup = BeautifulSoup("<html>data</html>")
+def home():
+    return 'This is the homepage!'
 
-    #LOOP ALL POSTS IN FACEBOOK
-        #CHECK IF A POST CONTAINS "NEWS" KEYWORDS (declare a list variable of all keywords)
-            #IF HAS
-                #GET THESE DETAILS:  details of one poster, date, keywords matched and text in the post
-                    #CLEAN THE DATA by removing unnecessary characters
-
-    print (soup.html);
-    return 'This is a sample Flask application!'
 
 @app.route('/fb')
 def fb_scrapper():
@@ -52,24 +47,42 @@ def fb_scrapper():
     # display the result
     return resp
 
-@app.route('/posts')
-def some_action():
-    
-    """ Here you might want to do something with each post. E.g. grab the
-    post's message (post['message']) or the post's picture (post['picture']).
-    In this implementation we just print the post's created time.
-    """
-    # print(post['created_time'])
 
-    # You'll need an access token here to do anything.  You can get a temporary one
+
+#this is to check the reliability of an inputted news site.
+@app.route('/input')
+def input():
+    # Add an input form getting the facebook url of the news site
+
+    return render_template('/input.html');
+
+
+@app.route('/check', methods=['POST', 'GET'])
+def check():
+    result = request.form;
+    
+    fbname = ''
+
+    if(result['url'] != ''):
+        #do something with url, only get the group name
+        found = re.search('facebook.com/(.+?)/*', result['url']).group(1);
+        fbname = found;
+        
+    elif(result['fbname'] != ''):
+        fbname= result['fbname'];
+
+    print(fbname);
+    user= 'TaylorSwift';
+    
+    # You'll need an access token here to do anything. You can get a temporary one
     # here: https://developers.facebook.com/tools/explorer/
     access_token = get_fb_token()
-    # Look at Bill Gates's profile for this example by using his Facebook id.
-    user = 'TaylorSwift'
+    
 
     graph = facebook.GraphAPI(access_token)
     profile = graph.get_object(user)
     posts = graph.get_connections(profile['id'], 'posts')
+
 
     # Wrap this block in a while loop so we can keep paginating requests until
     # finished.
@@ -84,10 +97,42 @@ def some_action():
 #            # When there are no more pages (['paging']['next']), break from the
 #            # loop and end the script.
 #            break
-    post_text = ""
-    #for post in posts['data']:
-    #    post_text = post_text + str(post)
-    return str(posts['data'])
+
+
+    #get all posts which are news related, checks if the words are used formally, and no grammar issues
+    for post in posts['data']:
+        if('message' in list(post)):  #only include 'message' not story. message are the one the user posted. 
+            post['message'] = re.sub(r'([^a-zA-Z\d\s])+', '', post['message']); #remove stray characters
+            #TODO: remove meaningless words, typo, etc.
+        print("#########################");
+        
+    return render_template("output.html", posts = posts['data']);
+    #return str(posts['data'])
+            
+
+
+
+@app.route('/train')
+def gettrainingdata():
+    # You'll need an access token here to do anything. You can get a temporary one
+    # here: https://developers.facebook.com/tools/explorer/
+    access_token = get_fb_token()
+    
+    for user in legitnews:
+        user = users[usercnt];
+
+        graph = facebook.GraphAPI(access_token)
+        profile = graph.get_object(user)
+        posts = graph.get_connections(profile['id'], 'posts')
+
+        #only use the latest three posts for every sites, remember we need just a sample of data to train.
+        i = 0
+        for post in posts and i < 3:
+            print(post['message'])
+            print("#");
+            i = i+1;  
+
+
 
 @app.route('/token')
 def get_fb_token():           
