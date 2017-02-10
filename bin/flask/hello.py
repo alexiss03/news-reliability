@@ -72,7 +72,8 @@ def check():
         fbname= result['fbname'];
 
     print(fbname);
-    user= 'TaylorSwift';
+    #user= 'TaylorSwift';
+    user= fbname;
     
     # You'll need an access token here to do anything. You can get a temporary one
     # here: https://developers.facebook.com/tools/explorer/
@@ -104,7 +105,7 @@ def check():
         if('message' in list(post)):  #only include 'message' not story. message are the one the user posted. 
             post['message'] = re.sub(r'([^a-zA-Z\d\s])+', '', post['message']); #remove stray characters
             #TODO: remove meaningless words, typo, etc.
-        print("#########################");
+        #print("#########################");
         
     return render_template("output.html", posts = posts['data']);
     #return str(posts['data'])
