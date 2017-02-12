@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<table>
+			<thead>
+				<td>Message</td>
+				<td>Created_time</td>
+				<td>id</td>
+			</thead>
+			{% for row in posts %}
+			<tr>
+				<td>{{row["message"]}}</td>
+				<td>{{row["created_time"]}}</td>
+				<td>{{row['id']}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+		<a href="/input">Go back to input page</a>	
+	</body>
+</html>
