@@ -1,25 +1,25 @@
 from flask import Flask, render_template, request
-
-import os
-import json
-import urllib
-import pprint
-
-import facebook
-import requests
-import re
-from bs4 import     BeautifulSoup
-#from sklearn.feature_extraction.text import TfidfVectorizer
-#import numpy
-
-os.environ['ACCESS_TOKEN'] = "EAACEdEose0cBAOZBTyWh3nULVojEUAZB01ZBt6QZBkf86hIz26PDNZB2DOdEpm0VPPhWfTg31nEyG2MJsRVzqxrRbffADtbIBwlYw4jVQpSJjZBI6qdU88qlYVRnQAF2RsyNi34PplbMwyNmPU8fK2ZCFBMAHBPG5WGf0oPoJXMZCvwlaAtCKY8IxSOPDskP2K8ZD"
-os.environ['APP_ID'] = "417532035253979"
-os.environ['APP_SECRET'] = "bdabd42f7762399c3bdc91ebbb336178"
+#
+#import os
+#import json
+#import urllib
+#import pprint
+#
+#import facebook
+#import requests
+#import re
+#from bs4 import     BeautifulSoup
+##from sklearn.feature_extraction.text import TfidfVectorizer
+##import numpy
+#
+#os.environ['ACCESS_TOKEN'] = "EAACEdEose0cBAOZBTyWh3nULVojEUAZB01ZBt6QZBkf86hIz26PDNZB2DOdEpm0VPPhWfTg31nEyG2MJsRVzqxrRbffADtbIBwlYw4jVQpSJjZBI6qdU88qlYVRnQAF2RsyNi34PplbMwyNmPU8fK2ZCFBMAHBPG5WGf0oPoJXMZCvwlaAtCKY8IxSOPDskP2K8ZD"
+#os.environ['APP_ID'] = "417532035253979"
+#os.environ['APP_SECRET'] = "bdabd42f7762399c3bdc91ebbb336178"
 
 app = Flask(__name__)
 
-#add here all the legitimate news sites, we will scrape their posts and will be the baseline/standard of a reliable news
-legitnews = ['TaylorSwift', 'ABSCBN', 'GMA', 'RAPPLER', 'CNN',];
+##add here all the legitimate news sites, we will scrape their posts and will be the baseline/standard of a reliable news
+#legitnews = ['TaylorSwift', 'ABSCBN', 'GMA', 'RAPPLER', 'CNN',];
 
 @app.route('/')
 def home():
