@@ -62,7 +62,7 @@ def check():
 
     if(result['url'] != ''):
         #do something with url, only get the group name
-        found = re.search('facebook.com/(.+?)/*', result['url']).group(1);
+        found = re.search('facebook.com/([a-zA-Z0-9]+)/*?',  result['url']).group(1);
         fbname = found;
         
     elif(result['fbname'] != ''):
@@ -142,5 +142,5 @@ def get_fb_token():
 if __name__ == "__main__":
     app.run()
 
-#app.run(debug=True)
-#app.run(port=8082)
+app.run(debug=True)
+app.run(port=8082)
