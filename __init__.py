@@ -8,7 +8,7 @@ import pprint
 import facebook
 import requests
 import re
-from bs4 import BeautifulSoup
+from bs4 import     BeautifulSoup
 #from sklearn.feature_extraction.text import TfidfVectorizer
 #import numpy
 
@@ -29,7 +29,7 @@ def home():
 @app.route('/fb')
 def fb_scrapper():
     # get Facebook access token from environment variable
-    ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
+    ACCESS_TOKEN = get_fb_token()
 
     # build the URL for the API endpoint
     host = "https://graph.facebook.com"
@@ -47,13 +47,10 @@ def fb_scrapper():
     # display the result
     return resp
 
-
-
 #this is to check the reliability of an inputted news site.
 @app.route('/input')
 def input():
     # Add an input form getting the facebook url of the news site
-
     return render_template('/input.html');
 
 
@@ -99,7 +96,6 @@ def check():
 #            # loop and end the script.
 #            break
 
-
     #get all posts which are news related, checks if the words are used formally, and no grammar issues
     for post in posts['data']:
         if('message' in list(post)):  #only include 'message' not story. message are the one the user posted. 
@@ -110,8 +106,6 @@ def check():
     return render_template("output.html", posts = posts['data']);
     #return str(posts['data'])
             
-
-
 
 @app.route('/train')
 def gettrainingdata():
@@ -132,8 +126,7 @@ def gettrainingdata():
             print(post['message'])
             print("#");
             i = i+1;  
-
-
+            
 
 @app.route('/token')
 def get_fb_token():           
@@ -143,6 +136,11 @@ def get_fb_token():
     result = file.text.split("=")[1]
     #print file.text #to test the TOKEN
     return result
+
+
+
+if __name__ == "__main__":
+    app.run()
 
 app.run(debug=True)
 app.run(port=8082)
