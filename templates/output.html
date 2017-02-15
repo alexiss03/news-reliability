@@ -4,14 +4,18 @@
 		<table>
 			<thead>
 				<td>Message</td>
-				<td>Created_time</td>
-				<td>id</td>
+				<td>Link</td>
+				<!--<td>Created_time</td>-->
+				<!--<td>id</td>-->
+				<td>Will Analyze?</td>
 			</thead>
 			{% for row in posts %}
 			<tr>
 				<td>{{row["message"]}}</td>
-				<td>{{row["created_time"]}}</td>
-				<td>{{row['id']}}</td>
+				<td>{{row["link"]}}</td>
+				<!--<td>{{row["created_time"]}}</td>
+				<td>{{row['id']}}</td>-->
+				<td><input type="submit" onclick="window.location='/analyze/{{row["link"]}}'" value="Analyze" />
 			</tr>
 			{% endfor %}
 		</table>

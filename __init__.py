@@ -8,7 +8,7 @@ import pprint
 import facebook
 import requests
 import re
-from bs4 import     BeautifulSoup
+from bs4 import BeautifulSoup
 #from sklearn.feature_extraction.text import TfidfVectorizer
 #import numpy
 
@@ -69,7 +69,6 @@ def check():
         fbname= result['fbname'];
 
     print(fbname);
-    #user= 'TaylorSwift';
     user= fbname;
     
     # You'll need an access token here to do anything. You can get a temporary one
@@ -79,8 +78,9 @@ def check():
 
     graph = facebook.GraphAPI(access_token)
     profile = graph.get_object(user)
-    posts = graph.get_connections(profile['id'], 'posts')
-
+    posts = graph.get_connections(profile['id'], 'posts', fields='id, message, created_time, link')
+    print(posts)
+    #posts = graph.get_connections(profile['id'], 'url')
 
     # Wrap this block in a while loop so we can keep paginating requests until
     # finished.
@@ -98,6 +98,7 @@ def check():
 
     #get all posts which are news related, checks if the words are used formally, and no grammar issues
     for post in posts['data']:
+        #print(post);
         if('message' in list(post)):  #only include 'message' not story. message are the one the user posted. 
             post['message'] = re.sub(r'([^a-zA-Z\d\s])+', '', post['message']); #remove stray characters
             #TODO: remove meaningless words, typo, etc.
@@ -105,7 +106,21 @@ def check():
         
     return render_template("output.html", posts = posts['data']);
     #return str(posts['data'])
-            
+ 
+
+@app.route('/analyze/<path:newslink>')
+def openlink(newslink):      
+    with urllib.request.urlopen(newslink) as url:
+        r = url.read()
+
+    soup = BeautifulSoup(r)
+    #print(soup.find('body'))
+
+    #ADD the code to find the main content of the page
+    return soup.find('body').prettify()
+
+
+    #return newslink           
 
 @app.route('/train')
 def gettrainingdata():
@@ -126,7 +141,8 @@ def gettrainingdata():
             print(post['message'])
             print("#");
             i = i+1;  
-            
+           
+
 
 @app.route('/token')
 def get_fb_token():           
@@ -139,8 +155,9 @@ def get_fb_token():
 
 
 
-if __name__ == "__main__":
-    app.run()
 
-app.run(debug=True)
-app.run(port=8082)
+if __name__ == "__main__":
+    #app.run()
+
+    app.run(debug=True)
+    app.run(port=8082)
