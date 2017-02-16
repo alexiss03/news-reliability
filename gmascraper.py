@@ -1,4 +1,4 @@
-#general news site scraper
+#GMA news site scraper
 
 from bs4 import BeautifulSoup
 import feedparser
@@ -9,12 +9,16 @@ import simplejson as json
 
 
 
-#gets the rss feeds of GMA News only the current news are taken
+#gets the rss feeds of GMA News only the current news are taken (you can change the '/nation' into other type of news)
 rssfeed = feedparser.parse('http://www.gmanetwork.com/news/rss/news/nation');
 
 #to get the count of the entries of the feed
 #len(rssfeed.entries)
-for feed in rssfeed.entries:
+limit = 5
+for index, feed in enumerate(rssfeed.entries):
+	if index == limit:
+		break;
+
 	summary = feed.summary #gets the news summary
 	title = feed.title #gets the news title
 	pubdate = feed.published #gets the date published
@@ -24,7 +28,7 @@ for feed in rssfeed.entries:
 		read = url.read()
 
 	#this is the pattern of GMA news, news contents are stored into a variable initialData
-	pattern = re.compile('var initialData = ({.*?});')
+	pattern = re.compile('var initialData = ({.*?});') #({.*?});
 
 	soup = BeautifulSoup(read, "html.parser")
 	parser = htmlparser.HTMLParser()
@@ -34,10 +38,11 @@ for feed in rssfeed.entries:
 	if script:
 		match = pattern.search(script.text);
 		if match:
+			#print(match.group(1))
 			x = json.loads(match.group(1))
 			#print(x["title"]);  #title of the news article
 			newscontent = BeautifulSoup(x["story"]["main"], "html.parser").text #gets all the text excluding the html tags
-			print newscontent
+			print(newscontent)
 
 			
 
