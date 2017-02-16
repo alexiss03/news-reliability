@@ -19,33 +19,12 @@ os.environ['APP_SECRET'] = "bdabd42f7762399c3bdc91ebbb336178"
 app = Flask(__name__)
 
 #add here all the legitimate news sites, we will scrape their posts and will be the baseline/standard of a reliable news
-legitnews = ['TaylorSwift', 'ABSCBN', 'GMA', 'RAPPLER', 'CNN',];
+legitnews = ['ABSCBN', 'GMA', 'RAPPLER', 'CNN'];
 
 @app.route('/')
 def home():
     return 'This is the homepage!'
 
-
-@app.route('/fb')
-def fb_scrapper():
-    # get Facebook access token from environment variable
-    ACCESS_TOKEN = get_fb_token()
-
-    # build the URL for the API endpoint
-    host = "https://graph.facebook.com"
-    path = "/me"
-    params = urllib.urlencode({"access_token": ACCESS_TOKEN})
-
-    url = "{host}{path}?{params}".format(host=host, path=path, params=params)
-
-    # open the URL and read the response
-    resp = urllib.urlopen(url).read()
-
-    # convert the returned JSON string to a Python datatype 
-    me = json.loads(resp)
-
-    # display the result
-    return resp
 
 #this is to check the reliability of an inputted news site.
 @app.route('/input')
@@ -106,21 +85,7 @@ def check():
         
     return render_template("output.html", posts = posts['data']);
     #return str(posts['data'])
- 
-
-@app.route('/analyze/<path:newslink>')
-def openlink(newslink):      
-    with urllib.request.urlopen(newslink) as url:
-        r = url.read()
-
-    soup = BeautifulSoup(r)
-    #print(soup.find('body'))
-
-    #ADD the code to find the main content of the page
-    return soup.find('body').prettify()
-
-
-    #return newslink           
+        
 
 @app.route('/train')
 def gettrainingdata():
@@ -157,7 +122,7 @@ def get_fb_token():
 
 
 if __name__ == "__main__":
-    #app.run()
+    app.run()
 
-    app.run(debug=True)
-    app.run(port=8082)
+# app.run(debug=True)
+# app.run(port=8082)
