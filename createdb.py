@@ -19,7 +19,7 @@ class Word(db.Model):
 		self.count = count
 
 	def __repr__(self):
-		return '<Word-> %r: %r>' % (self.word, self.count)
+		return '<Word %r: %r>' % (self.word, self.count)
 
 
 #class of the newslinks

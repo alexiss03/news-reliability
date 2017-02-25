@@ -9,6 +9,13 @@ import facebook
 import requests
 import re
 from bs4 import BeautifulSoup
+from gmascraper import gmascraper
+from rapplerscraper import rapplerscraper
+from cnnscraper import cnnscraper
+from manilabulletinscraper import manilabulletinscraper
+from philstarscraper import philstarscraper
+from createdb import db, Newslink, Word
+from functions import *
 #from sklearn.feature_extraction.text import TfidfVectorizer
 #import numpy
 
@@ -87,27 +94,39 @@ def check():
     #return str(posts['data'])
         
 
-@app.route('/train')
-def gettrainingdata():
-    # You'll need an access token here to do anything. You can get a temporary one
-    # here: https://developers.facebook.com/tools/explorer/
-    access_token = get_fb_token()
-    
-    for user in legitnews:
-        user = users[usercnt];
+@app.route('/scrape', methods=["POST", "GET"])
+def scrapedata():
+    channel = request.form['channel']
 
-        graph = facebook.GraphAPI(access_token)
-        profile = graph.get_object(user)
-        posts = graph.get_connections(profile['id'], 'posts')
+    if(channel == 'GMA'):
+        gmascraper()
+    elif(channel == 'RAPPLER'):
+        rapplerscraper()
+    elif(channel == 'CNN'):
+        cnnscraper()
+    elif(channel == 'MANILABULLETIN'):
+        manilabulletinscraper()
+    elif(channel == 'PHILSTAR'):
+        philstarscraper()
 
-        #only use the latest three posts for every sites, remember we need just a sample of data to train.
-        i = 0
-        for post in posts and i < 3:
-            print(post['message'])
-            print("#");
-            i = i+1;  
-           
+    return "SEE LOGS " + request.form['channel'];
 
+
+@app.route('/selectworddb', methods=["POST", "GET"])
+def selectworddb():
+    print(Word.query.all())
+    return "SEE LOG FOR THE DB CONTENTS: WORDS"
+
+@app.route('/selectnewslinkdb', methods=["POST", "GET"])
+def selectnewslinkdb():
+    print(Newslink.query.all())
+    return "SEE LOG FOR THE DB CONTENTS: NEWSLINK"
+
+@app.route('/deletedb', methods=["POST", "GET"])
+def deletedb():
+    db.drop_all(bind=None) #delete contents of db
+    db.create_all()
+    return str(Word.query.all())
 
 @app.route('/token')
 def get_fb_token():           
@@ -124,5 +143,5 @@ def get_fb_token():
 if __name__ == "__main__":
     app.run()
 
-# app.run(debug=True)
-# app.run(port=8082)
+    app.run(debug=True)
+    app.run(port=8082)
