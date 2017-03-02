@@ -11,5 +11,32 @@
 			<br>
 			<input type="submit" value="Check validity">
 		</form>
+
+
+		<br><br><br>
+		<h4> Train and Gather Data from News Sites "choose only one"</h4>
+		<form action="http://localhost:5000/scrape" method="post">
+			<input type="checkbox" value="GMA" name="channel"/>GMA <br>
+			<input type="checkbox" value="RAPPLER" name="channel"/>RAPPLER<br>
+			<input type="checkbox" value="CNN" name="channel"/>CNN<br>
+			<input type="checkbox" value="MANILABULLETIB" name="channel"/>MANILA BULLETIN<br>
+			<input type="checkbox" value="PHILSTAR" name="channel"/>PHILSTAR<br>
+			<input type="submit" value="Run Scraper">
+		</form>
+
+		<br><br><br>
+		<h4> SEE CONTENTS OF WORD DB</h4>
+		<form action="http://localhost:5000/selectworddb" method="post">
+			<input type="submit" value="See WORD DB">
+		</form>
+		<form action="http://localhost:5000/selectnewslinkdb" method="post">
+			<input type="submit" value="See NEWSLINK DB">
+		</form>
+
+		<br><br><br>
+		<h4> DELETE CONTENTS DB</h4>
+		<form action="http://localhost:5000/deletedb" method="post">
+			<input type="submit" value="Delete contents of DB">
+		</form>
 	</body>
 </html>

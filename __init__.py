@@ -8,7 +8,14 @@ import pprint
 import facebook
 import requests
 import re
-from bs4 import     BeautifulSoup
+from bs4 import BeautifulSoup
+from gmascraper import gmascraper
+from rapplerscraper import rapplerscraper
+from cnnscraper import cnnscraper
+from manilabulletinscraper import manilabulletinscraper
+from philstarscraper import philstarscraper
+from createdb import db, Newslink, Word
+from functions import *
 #from sklearn.feature_extraction.text import TfidfVectorizer
 #import numpy
 
@@ -19,33 +26,12 @@ os.environ['APP_SECRET'] = "bdabd42f7762399c3bdc91ebbb336178"
 app = Flask(__name__)
 
 #add here all the legitimate news sites, we will scrape their posts and will be the baseline/standard of a reliable news
-legitnews = ['TaylorSwift', 'ABSCBN', 'GMA', 'RAPPLER', 'CNN',];
+legitnews = ['ABSCBN', 'GMA', 'RAPPLER', 'CNN'];
 
 @app.route('/')
 def home():
     return 'This is the homepage!'
 
-
-@app.route('/fb')
-def fb_scrapper():
-    # get Facebook access token from environment variable
-    ACCESS_TOKEN = get_fb_token()
-
-    # build the URL for the API endpoint
-    host = "https://graph.facebook.com"
-    path = "/me"
-    params = urllib.urlencode({"access_token": ACCESS_TOKEN})
-
-    url = "{host}{path}?{params}".format(host=host, path=path, params=params)
-
-    # open the URL and read the response
-    resp = urllib.urlopen(url).read()
-
-    # convert the returned JSON string to a Python datatype 
-    me = json.loads(resp)
-
-    # display the result
-    return resp
 
 #this is to check the reliability of an inputted news site.
 @app.route('/input')
@@ -69,7 +55,6 @@ def check():
         fbname= result['fbname'];
 
     print(fbname);
-    #user= 'TaylorSwift';
     user= fbname;
     
     # You'll need an access token here to do anything. You can get a temporary one
@@ -79,8 +64,9 @@ def check():
 
     graph = facebook.GraphAPI(access_token)
     profile = graph.get_object(user)
-    posts = graph.get_connections(profile['id'], 'posts')
-
+    posts = graph.get_connections(profile['id'], 'posts', fields='id, message, created_time, link')
+    print(posts)
+    #posts = graph.get_connections(profile['id'], 'url')
 
     # Wrap this block in a while loop so we can keep paginating requests until
     # finished.
@@ -98,6 +84,7 @@ def check():
 
     #get all posts which are news related, checks if the words are used formally, and no grammar issues
     for post in posts['data']:
+        #print(post);
         if('message' in list(post)):  #only include 'message' not story. message are the one the user posted. 
             post['message'] = re.sub(r'([^a-zA-Z\d\s])+', '', post['message']); #remove stray characters
             #TODO: remove meaningless words, typo, etc.
@@ -105,28 +92,41 @@ def check():
         
     return render_template("output.html", posts = posts['data']);
     #return str(posts['data'])
-            
+        
 
-@app.route('/train')
-def gettrainingdata():
-    # You'll need an access token here to do anything. You can get a temporary one
-    # here: https://developers.facebook.com/tools/explorer/
-    access_token = get_fb_token()
-    
-    for user in legitnews:
-        user = users[usercnt];
+@app.route('/scrape', methods=["POST", "GET"])
+def scrapedata():
+    channel = request.form['channel']
 
-        graph = facebook.GraphAPI(access_token)
-        profile = graph.get_object(user)
-        posts = graph.get_connections(profile['id'], 'posts')
+    if(channel == 'GMA'):
+        gmascraper()
+    elif(channel == 'RAPPLER'):
+        rapplerscraper()
+    elif(channel == 'CNN'):
+        cnnscraper()
+    elif(channel == 'MANILABULLETIN'):
+        manilabulletinscraper()
+    elif(channel == 'PHILSTAR'):
+        philstarscraper()
 
-        #only use the latest three posts for every sites, remember we need just a sample of data to train.
-        i = 0
-        for post in posts and i < 3:
-            print(post['message'])
-            print("#");
-            i = i+1;  
-            
+    return "SEE LOGS " + request.form['channel'];
+
+
+@app.route('/selectworddb', methods=["POST", "GET"])
+def selectworddb():
+    print(Word.query.all())
+    return "SEE LOG FOR THE DB CONTENTS: WORDS"
+
+@app.route('/selectnewslinkdb', methods=["POST", "GET"])
+def selectnewslinkdb():
+    print(Newslink.query.all())
+    return "SEE LOG FOR THE DB CONTENTS: NEWSLINK"
+
+@app.route('/deletedb', methods=["POST", "GET"])
+def deletedb():
+    db.drop_all(bind=None) #delete contents of db
+    db.create_all()
+    return str(Word.query.all())
 
 @app.route('/token')
 def get_fb_token():           
@@ -139,8 +139,10 @@ def get_fb_token():
 
 
 
+
 if __name__ == "__main__":
     app.run()
-#
+
 #app.run(debug=True)
 #app.run(port=8082)
+
