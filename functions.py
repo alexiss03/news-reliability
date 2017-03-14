@@ -49,3 +49,31 @@ def updatenewsdb(channel, title, pubdate, link):
 
 # countoccurrence("h")
 # print(Word.query.all())
+
+def cnnscraper():
+	soup = BeautifulSoup(read, "html.parser")
+	if soup.find_all(["div", "p"], {"class":"zn-body__paragraph"}):
+		paragraphs = soup.find_all(["div", "p"], {"class":"zn-body__paragraph"})
+		paragraphs = BeautifulSoup(str.join(u'\n',map(str,paragraphs)), "html.parser").text
+		print(paragraphs)
+		countoccurrence(paragraphs) #count occurrence of words
+
+def manilabulletinscraper():
+	soup = BeautifulSoup(read, "html.parser")
+
+	if soup.find_all(["div", "p"], {"class":"tm-main"}):
+		paragraphs = soup.find(["div", "p"], {"class":"tm-main"}).findAll('p')
+		paragraphs = BeautifulSoup(str.join(u'\n',map(str,paragraphs)), "html.parser").text
+		print(paragraphs)
+
+		countoccurrence(paragraphs) #count occurrence of words
+
+def philstarscraper():
+	soup = BeautifulSoup(read, "html.parser")
+        
+	if soup.find_all(["div", "p"], {"class":"field-item even"}):
+		paragraphs = soup.find(["div", "p"], {"class":"field-item even"}).findAll('p')
+		paragraphs = BeautifulSoup(str.join(u'\n',map(str,paragraphs)), "html.parser").text
+		print(paragraphs)
+
+		countoccurrence(paragraphs) #count occurrence of words
