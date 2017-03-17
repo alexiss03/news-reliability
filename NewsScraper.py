@@ -42,85 +42,17 @@ class NewsScraper:
 				read = url.read()
 
 			if(channel == 'GMA'):
-				gmascraper()
+				gmascraper(read)
 			elif(channel == 'RAPPLER'):
-				rapperscraper()
+				rapplerscraper(read)
 			elif(channel == 'CNN'):
-				cnnscraper()
+				cnnscraper(read)
 			elif(channel == 'MANILABULLETIN'):
-				manilabulletinscraper()
+				manilabulletinscraper(read)
 			elif(channel == 'PHILSTAR'):
-				philstarscraper()
+				philstarscraper(read)
 
 
-	def gmascraper():
-		#this is the pattern of GMA news, news contents are stored into a variable initialData
-		pattern = re.compile('var initialData = ({.*?});') #({.*?});
+	
 
-		soup = BeautifulSoup(read, "html.parser")
-		parser = htmlparser.HTMLParser()
-		parser.unescape(soup)
-
-		script = soup.find('script', text = pattern)
-		if script:
-			match = pattern.search(script.text);
-			if match:
-				#print(match.group(1))
-				x = json.loads(match.group(1))
-				#print(x["title"]);  #title of the news article
-				newscontent = BeautifulSoup(x["story"]["main"], "html.parser").text #gets all the text excluding the html tags
-					
-				countoccurrence(newscontent) #count occurrence of words
-
-
-	def rapplerscraper():
-		soup = BeautifulSoup(read, "html.parser")
-		if soup.find("div", {"class":"storypage-divider desktop"}):
-			paragraphs = soup.find("div", {"class":"storypage-divider desktop"}).findAll('p')
-			paragraphs = BeautifulSoup(str.join(u'\n',map(str,paragraphs)), "html.parser").text
-			print(paragraphs)
-		else:
-			pattern = re.compile('var r4articleData = (.*?)$')
-			parser = htmlparser.HTMLParser()
-			parser.unescape(soup)
-
-			script = soup.find('script', text = pattern)
-			if script:
-				match = pattern.search(script.text);
-				if match:
-		            #print(x["title"]);  #title of the news article
-					print(script.text)
-					x = json.loads(match.group(1))
-					newscontent = BeautifulSoup(x["fulltext"], "html.parser").text #gets all the text excluding the html tags
-					print(newscontent)
-
-					countoccurrence(newscontent) #count occurrence of words
-
-	def cnnscraper():
-		soup = BeautifulSoup(read, "html.parser")
-		if soup.find_all(["div", "p"], {"class":"zn-body__paragraph"}):
-			paragraphs = soup.find_all(["div", "p"], {"class":"zn-body__paragraph"})
-			paragraphs = BeautifulSoup(str.join(u'\n',map(str,paragraphs)), "html.parser").text
-			print(paragraphs)
-
-			countoccurrence(paragraphs) #count occurrence of words
-
-	def manilabulletinscraper():
-		soup = BeautifulSoup(read, "html.parser")
-
-		if soup.find_all(["div", "p"], {"class":"tm-main"}):
-			paragraphs = soup.find(["div", "p"], {"class":"tm-main"}).findAll('p')
-			paragraphs = BeautifulSoup(str.join(u'\n',map(str,paragraphs)), "html.parser").text
-			print(paragraphs)
-
-			countoccurrence(paragraphs) #count occurrence of words
-
-	def philstarscraper():
-		soup = BeautifulSoup(read, "html.parser")
-        
-		if soup.find_all(["div", "p"], {"class":"field-item even"}):
-			paragraphs = soup.find(["div", "p"], {"class":"field-item even"}).findAll('p')
-			paragraphs = BeautifulSoup(str.join(u'\n',map(str,paragraphs)), "html.parser").text
-			print(paragraphs)
-
-			countoccurrence(paragraphs) #count occurrence of words
+	
