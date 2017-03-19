@@ -29,7 +29,7 @@ class Newslink(db.Model):
 	title = db.Column(db.String(100))
 	pubdate = db.Column(db.String(100))
 	link = db.Column(db.String(200)) #link of the news site
-
+	#wordfrequency = db.Colu
 
 	def __init__(self, channel, title, pubdate, link):
 			self.channel = channel
