@@ -1,3 +1,4 @@
+from createdb import db, News, Word
 
 class DB:
 	def updateworddb(wordfrequencies):
@@ -16,8 +17,9 @@ class DB:
 			print("Word database successfully updated")
 
 
-	def updatenewsdb(channel, title, pubdate, link):
-		newslink = Newslink(channel, title, pubdate, link)
+	@staticmethod
+	def updatenewsdb(channel, title, pubdate, link, wordfrequencies):
+		newslink = News(channel, title, pubdate, link, wordfrequencies)
 		db.session.add(newslink)
 		db.session.commit()
 		print("News database successfully updated")

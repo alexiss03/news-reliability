@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 #from manilabulletinscraper import manilabulletinscraper
 #from philstarscraper import philstarscraper
 from NewsScraper import NewsScraper 
-from createdb import db, Newslink, Word
+from createdb import db, News, Word
 from functions import *
 #from sklearn.feature_extraction.text import TfidfVectorizer
 #import numpy
@@ -119,7 +119,7 @@ def selectworddb():
 
 @app.route('/selectnewslinkdb', methods=["POST", "GET"])
 def selectnewslinkdb():
-    print(Newslink.query.all())
+    print(News.query.all())
     return "SEE LOG FOR THE DB CONTENTS: NEWSLINK"
 
 @app.route('/deletedb', methods=["POST", "GET"])
