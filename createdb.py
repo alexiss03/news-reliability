@@ -65,7 +65,7 @@ class News(db.Model):
         self.news_words = news_words
     
     def __repr__(self):
-        return '<Newslink: %r>' % self.news_words
+        return '<Newslink: %r>' % self.link
     
     
 class Topic(db.Model):

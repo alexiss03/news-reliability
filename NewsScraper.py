@@ -35,6 +35,7 @@ class NewsScraper:
 				print("News article is already found in the DB")
 				continue;
 
+			print("Is there a news of the same link in the DB?")
 			print(News.query.filter_by(link = link).first())
 			with urllib.request.urlopen(link) as url:
 				read = url.read()

@@ -33,7 +33,7 @@ def rapplerscraper(read):
 	if soup.find("div", {"class":"storypage-divider desktop"}):
 		newscontent = soup.find("div", {"class":"storypage-divider desktop"}).findAll('p')
 		newscontent = BeautifulSoup(str.join(u'\n',map(str,newscontent)), "html.parser").text
-		print(newscontent)
+		print("newscontent A")
 		newswords = NLP.countoccurrence(newscontent)
 	else:
 		pattern = re.compile('var r4articleData = (.*?)$')
@@ -48,10 +48,9 @@ def rapplerscraper(read):
 				print(script.text)
 				x = json.loads(match.group(1))
 				newscontent = BeautifulSoup(x["fulltext"], "html.parser").text #gets all the text excluding the html tags
-				print(newscontent)
+				print("newscontent B")
 
 				newswords = NLP.countoccurrence(newscontent) #count occurrence of words
-
 	return newswords;
 
 def cnnscraper(read):
@@ -70,7 +69,7 @@ def manilabulletinscraper(read):
 
 	if soup.find_all(["div", "p"], {"class":"tm-main"}):
 		newscontent = soup.find(["div", "p"], {"class":"tm-main"}).findAll('p')
-		newscontent = BeautifulSoup(str.join(u'\n',map(str,paragraphs)), "html.parser").text
+		newscontent = BeautifulSoup(str.join(u'\n',map(str,newscontent)), "html.parser").text
 		print(newscontent)
 		newswords = NLP.countoccurrence(newscontent) #count occurrence of words
 		return newswords
