@@ -1,4 +1,4 @@
-from createdb import News, Word, Topic
+from create_db import News, Word, Topic
 
 sentiment_dictionary = {}
 

@@ -1,10 +1,10 @@
 import nltk, re
 from nltk.probability import FreqDist
-from createdb import db, News, Word, NewsWord
+from create_db import db, News, Word, NewsWord
 from collections import Counter
 import enchant
 
-def cleandata(paragraph):
+def clean_data(paragraph):
 		#strips the stray characters or non-alphanumeric characters
 		paragraph = re.sub('[^0-9a-zA-Z\' ]+', '', paragraph) 
 
@@ -13,12 +13,12 @@ def cleandata(paragraph):
 		return paragraph
 
 
-class NLP:
+class NaturalLanguageProcessor:
 	#customized counting occurrences of words
 	@staticmethod
-	def countoccurrence(paragraph): #no self in the parameter since this is a static method
+	def count_occurrence(paragraph): #no self in the parameter since this is a static method
 		#clean/remove the stray characters in the text
-		paragraph = cleandata(paragraph)
+		paragraph = clean_data(paragraph)
 
 		dictionary = enchant.Dict('en_US');
 		wordfrequencies = []

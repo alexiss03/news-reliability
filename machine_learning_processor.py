@@ -1,5 +1,5 @@
 
-from createdb import News, Topic
+from create_db import News, Topic
 from sentiment_analyzer import SentimentAnalyzer
 
 class MachineLearningProcessor:

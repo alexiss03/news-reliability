@@ -6,8 +6,8 @@ import urllib
 import re
 import html.parser as htmlparser
 import simplejson as json
-from createdb import db, News
-from DB import DB
+from create_db import db, News
+from database_manager import DatabaseManager as DB
 #from functions import countoccurrence
 from functions import *
 
@@ -42,19 +42,19 @@ class NewsScraper:
 
 			print("Ready to scrape")
 			if(channel == 'GMA'):
-				wordfrequencies = gmascraper(read)
+				wordfrequencies = gma_scraper(read)
 			elif(channel == 'RAPPLER'):
-				wordfrequencies = rapplerscraper(read)
+				wordfrequencies = rappler_scraper(read)
 			elif(channel == 'CNN'):
-				wordfrequencies = cnnscraper(read)
+				wordfrequencies = cnn_scraper(read)
 			elif(channel == 'MANILABULLETIN'):
-				wordfrequencies = manilabulletinscraper(read)
+				wordfrequencies = manilabulletin_scraper(read)
 			elif(channel == 'PHILSTAR'):
-				wordfrequencies = philstarscraper(read)
+				wordfrequencies = philstar_scraper(read)
 
 
 			#Adding to News database
-			DB.updatenewsdb(channel, title, pubdate, link, wordfrequencies)
+			DB.update_news_db(channel, title, pubdate, link, wordfrequencies)
 	
 
 	

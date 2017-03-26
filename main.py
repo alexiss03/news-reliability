@@ -9,13 +9,8 @@ import facebook
 import requests
 import re
 from bs4 import BeautifulSoup
-#from gmascraper import gmascraper
-#from rapplerscraper import rapplerscraper
-#from cnnscraper import cnnscraper
-#from manilabulletinscraper import manilabulletinscraper
-#from philstarscraper import philstarscraper
-from NewsScraper import NewsScraper 
-from createdb import db, News, Word
+from news_scraper import NewsScraper 
+from create_db import db, News, Word
 from functions import *
 #from sklearn.feature_extraction.text import TfidfVectorizer
 #import numpy

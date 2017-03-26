@@ -1,14 +1,14 @@
 import re
-from createdb import db, Word, News
+from create_db import db, Word, News
 from bs4 import BeautifulSoup
 import html.parser as htmlparser
 import feedparser
 import urllib
 import simplejson as json
-from NLP import NLP
+from natural_language_processor import NaturalLanguageProcessor as NLP
 
 
-def gmascraper(read):
+def gma_scraper(read):
 	#this is the pattern of GMA news, news contents are stored into a variable initialData
 	pattern = re.compile('var initialData = ({.*?});') #({.*?});
 
@@ -21,20 +21,20 @@ def gmascraper(read):
 		match = pattern.search(script.text);
 		if match:
 		#print(match.group(1))
-			x = json.loads(match.group(10))
+			x = json.loads(match.group(1))
 			#print(x["title"]);  #title of the news article
 			newscontent = BeautifulSoup(x["story"]["main"], "html.parser").text #gets all the text excluding the html tags		
 			print(newscontent)
-			newswords = NLP.countoccurrence(newscontent) #count occurrence of words
+			newswords = NLP.count_occurrence(newscontent) #count occurrence of words
 			return newswords;
 
-def rapplerscraper(read):
+def rappler_scraper(read):
 	soup = BeautifulSoup(read, "html.parser")
 	if soup.find("div", {"class":"storypage-divider desktop"}):
 		newscontent = soup.find("div", {"class":"storypage-divider desktop"}).findAll('p')
 		newscontent = BeautifulSoup(str.join(u'\n',map(str,newscontent)), "html.parser").text
 		print("newscontent A")
-		newswords = NLP.countoccurrence(newscontent)
+		newswords = NLP.count_occurrence(newscontent)
 	else:
 		pattern = re.compile('var r4articleData = (.*?)$')
 		parser = htmlparser.HTMLParser()
@@ -50,32 +50,32 @@ def rapplerscraper(read):
 				newscontent = BeautifulSoup(x["fulltext"], "html.parser").text #gets all the text excluding the html tags
 				print("newscontent B")
 
-				newswords = NLP.countoccurrence(newscontent) #count occurrence of words
+				newswords = NLP.count_occurrence(newscontent) #count occurrence of words
 	return newswords;
 
-def cnnscraper(read):
+def cnn_scraper(read):
 	soup = BeautifulSoup(read, "html.parser")
 	if soup.find_all(["div", "p"], {"class":"zn-body__paragraph"}):
 		newscontent = soup.find_all(["div", "p"], {"class":"zn-body__paragraph"})
 		newscontent = BeautifulSoup(str.join(u'\n',map(str,newscontent)), "html.parser").text
 		print(newscontent)
-		newswords = NLP.countoccurrence(newscontent) #count occurrence of words
+		newswords = NLP.count_occurrence(newscontent) #count occurrence of words
 
 		return newswords
 
 
-def manilabulletinscraper(read):
+def manilabulletin_scraper(read):
 	soup = BeautifulSoup(read, "html.parser")
 
 	if soup.find_all(["div", "p"], {"class":"tm-main"}):
 		newscontent = soup.find(["div", "p"], {"class":"tm-main"}).findAll('p')
 		newscontent = BeautifulSoup(str.join(u'\n',map(str,newscontent)), "html.parser").text
 		print(newscontent)
-		newswords = NLP.countoccurrence(newscontent) #count occurrence of words
+		newswords = NLP.count_occurrence(newscontent) #count occurrence of words
 		return newswords
 
 
-def philstarscraper(read):
+def philstar_scraper(read):
 	soup = BeautifulSoup(read, "html.parser")
         
 	if soup.find_all(["div", "p"], {"class":"field-item even"}):
@@ -83,5 +83,5 @@ def philstarscraper(read):
 		newscontent = BeautifulSoup(str.join(u'\n',map(str,newscontent)), "html.parser").text
 		print(newscontent)
 
-		newswords = NLP.countoccurrence(newscontent) #count occurrence of words	
+		newswords = NLP.count_occurrence(newscontent) #count occurrence of words	
 		return newswords

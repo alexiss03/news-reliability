@@ -1,7 +1,7 @@
-from createdb import db, News, Word
+from create_db import db, News, Word
 
-class DB:
-	def updateworddb(wordfrequencies):
+class DatabaseManager:
+	def update_word_db(wordfrequencies):
 		#print(wordfrequencies)
 		for word in wordfrequencies:
 			#the word --> word
@@ -18,7 +18,7 @@ class DB:
 
 
 	@staticmethod
-	def updatenewsdb(channel, title, pubdate, link, wordfrequencies):
+	def update_news_db(channel, title, pubdate, link, wordfrequencies):
 		newslink = News(channel, title, pubdate, link, wordfrequencies)
 		db.session.add(newslink)
 		db.session.commit()
