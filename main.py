@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 #from manilabulletinscraper import manilabulletinscraper
 #from philstarscraper import philstarscraper
 from NewsScraper import NewsScraper 
-from createdb import db, Newslink, Word
+from createdb import db, News, Word
 from functions import *
 #from sklearn.feature_extraction.text import TfidfVectorizer
 #import numpy
@@ -24,7 +24,14 @@ os.environ['ACCESS_TOKEN'] = "EAACEdEose0cBAOZBTyWh3nULVojEUAZB01ZBt6QZBkf86hIz2
 os.environ['APP_ID'] = "417532035253979"
 os.environ['APP_SECRET'] = "bdabd42f7762399c3bdc91ebbb336178"
 
+
+
 app = Flask(__name__)
+
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///words.sqlite3'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+db.init_app(app)
 
 #add here all the legitimate news sites, we will scrape their posts and will be the baseline/standard of a reliable news
 legitnews = ['ABSCBN', 'GMA', 'RAPPLER', 'CNN'];
@@ -119,7 +126,7 @@ def selectworddb():
 
 @app.route('/selectnewslinkdb', methods=["POST", "GET"])
 def selectnewslinkdb():
-    print(Newslink.query.all())
+    print(News.query.all())
     return "SEE LOG FOR THE DB CONTENTS: NEWSLINK"
 
 @app.route('/deletedb', methods=["POST", "GET"])

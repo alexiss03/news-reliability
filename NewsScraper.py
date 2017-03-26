@@ -6,7 +6,8 @@ import urllib
 import re
 import html.parser as htmlparser
 import simplejson as json
-from createdb import db, Newslink
+from createdb import db, News
+from DB import DB
 #from functions import countoccurrence
 from functions import *
 
@@ -30,29 +31,30 @@ class NewsScraper:
 			link = feed.links[0].href #gets the link
 
 			#checks if the newslink is already found in the database, if there is same entry in the db, then proceed to the next iteration
-			if(Newslink.query.filter_by(link = link).first() is not None): 
+			if(News.query.filter_by(link = link).first() is not None): 
 				print("News article is already found in the DB")
 				continue;
 
-			#Adding to News database
-			updatenewsdb(channel, title, pubdate, link)
-
-			print(Newslink.query.filter_by(link = link).first())
+			print("Is there a news of the same link in the DB?")
+			print(News.query.filter_by(link = link).first())
 			with urllib.request.urlopen(link) as url:
 				read = url.read()
 
+			print("Ready to scrape")
 			if(channel == 'GMA'):
-				gmascraper(read)
+				wordfrequencies = gmascraper(read)
 			elif(channel == 'RAPPLER'):
-				rapplerscraper(read)
+				wordfrequencies = rapplerscraper(read)
 			elif(channel == 'CNN'):
-				cnnscraper(read)
+				wordfrequencies = cnnscraper(read)
 			elif(channel == 'MANILABULLETIN'):
-				manilabulletinscraper(read)
+				wordfrequencies = manilabulletinscraper(read)
 			elif(channel == 'PHILSTAR'):
-				philstarscraper(read)
+				wordfrequencies = philstarscraper(read)
 
 
+			#Adding to News database
+			DB.updatenewsdb(channel, title, pubdate, link, wordfrequencies)
 	
 
 	
