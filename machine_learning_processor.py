@@ -1,35 +1,63 @@
-import uuid
 
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
 from createdb import News, Topic
+from sentiment_analyzer import SentimentAnalyzer
 
 class MachineLearningProcessor:
-    def identify_topics(self, newslist):
+
+    sentiment_analyzer = SentimentAnalyzer()
+
+    def compute_for_reliability_score(self, input_string):
+        # TODO: create News instance from input string
+        input_news = News()
+
+        # TODO: Replace this with the filtered no topic news query
+        self.generate_topics_from_newlist(News.query.all())
+
+        if self.identify_topic_for_news(input_news) != None:
+            self.sentiment_analyzer.identify_reliability(input_news)
+
+        else:
+            return None
+
+
+    def identify_topic_for_news(self, news):
+        topic = Topic.query.all()
+        if self.news_belongs_to_any_topic():
+            news.topic_id
+        else:
+            return None
+
+
+    def generate_topics_from_newlist(self, newslist):
         topics = []
         
         for news in newslist:
-            for topic in topics:
-                if self.news_belongs_to_topic(topic,news):
-                    break
-            
-            if news.topic is None:
-                topic_word = []
-                for news_word in sorted(news.news_words)[:5]:
-                    topic_word.append(news_word.word)
 
-                new_topic = Topic(topic_word)
+            if not news.topic is None:
+                break
+
+            self.news_belongs_to_any_topic(news, topics)
+
+            if news.topic is None:
+                new_topic = self.create_new_topic_for_news(news)
                 topics.append(new_topic)
 
-        print("topic:" + str(topics))
+        print("topic count " + str(len(topics)))
+
+        for topic in topics:
+            # The minimum newslist count will be adjusted accordingly
+            if len(topic.newslist) < 5:
+                topics.remove(topic)
+
+
         return topics
                 
 
-    def news_belongs_to_topic(self,topic, news):
+    def news_belongs_to_topic(self, news, topic):
         topic_count = len(topic.words)
         match_words = 0
         
-        for news_word in sorted(news.news_words)[:5]:
+        for news_word in sorted(news.news_words)[:10]:
             if news_word.word in topic.words:
                 match_words +=1
                 
@@ -40,32 +68,26 @@ class MachineLearningProcessor:
             return False
 
 
-#dummy data
+    def news_belongs_to_any_topic(self, news, topics):
+        for topic in topics:
+            if self.news_belongs_to_topic(news,topic):
+                return True
 
-#word1 = Word("the")
-#word2 = Word("quick")
-#word3 = Word("brown")
-#word4 = Word("fox")
-#word5 = Word("jump")
-#word6 = Word("over")
-#word7 = Word("the")
-
-#newsword1 = NewsWord(word1, 1)
-#newsword2 = NewsWord(word2, 2)
-#newsword3 = NewsWord(word3, 3)
-#newsword4 = NewsWord(word4, 4)
-#newsword5 = NewsWord(word5, 5)
-#newsword6 = NewsWord(word6, 6)
-#newsword7 = NewsWord(word1, 4)
-#newsword8 = NewsWord(word2, 4)
+        return False
 
 
-#news1 = News("abscbn", "The quick brown fox jumps over the lazy", "01-01-01", "http://www.google.com",[newsword1, newsword2, newsword3, newsword4, newsword5, newsword6])
-#news2 = News("abscbn", "The quick brown fox jumps over the lazy", "01-01-01", "http://www.google.com",[newsword4, newsword3, newsword5, newsword6])
-            
+    def create_new_topic_for_news(self, news):
+        topic_word = []
+        for news_word in sorted(news.news_words)[:10]:
+            topic_word.append(news_word.word)
+
+        new_topic = Topic(topic_word)
+        return new_topic
+
+
 ml = MachineLearningProcessor()
 allnews = News.query.all()
 print(allnews)
 #print(news1.first())
-ml.identify_topics(allnews)
+ml.generate_topics_from_newlist(allnews)
 #ml.identify_topics([news1, news2])

@@ -14,6 +14,7 @@ WordTopic = db.Table('WordTopic',
     db.Column('topic_id', db.Integer, db.ForeignKey('word.word_id')),
     db.Column('word_id', db.Integer, db.ForeignKey('topic.topic_id')))
 
+
 class Word(db.Model):
     __tablename__ = "word"
     id = db.Column("word_id", db.Integer, primary_key=True, autoincrement=True)
@@ -66,12 +67,14 @@ class News(db.Model):
     
     def __repr__(self):
         return '<Newslink: %r>' % self.link
-    
+
+# TODO: Create a class InputNews that is subclass of News with an initializer of raw input string only channel, pubdate, link, topic_id can be null but news_words must be populated by this initializer
+
     
 class Topic(db.Model):
     __tablename__ = "topic"
     id = db.Column('topic_id', db.Integer, primary_key=True)
-    news = db.relationship("News", backref="topic", lazy='dynamic')
+    newslist = db.relationship("News", backref="topic", lazy='dynamic')
     word = db.relationship('Word', secondary=WordTopic, backref='topics')
     
     def __init__(self, words):

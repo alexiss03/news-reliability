@@ -21,7 +21,7 @@ def gmascraper(read):
 		match = pattern.search(script.text);
 		if match:
 		#print(match.group(1))
-			x = json.loads(match.group(1))
+			x = json.loads(match.group(10))
 			#print(x["title"]);  #title of the news article
 			newscontent = BeautifulSoup(x["story"]["main"], "html.parser").text #gets all the text excluding the html tags		
 			print(newscontent)
