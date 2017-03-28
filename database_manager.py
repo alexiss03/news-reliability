@@ -23,3 +23,10 @@ class DatabaseManager:
 		db.session.add(newslink)
 		db.session.commit()
 		print("News database successfully updated")
+
+	@staticmethod
+	def update_topic_db(newslist, word):
+		topic = Topic(newslist, word)
+		db.session.add(topic)
+		db.session.commit()
+		print("Topic database successfully updated")
