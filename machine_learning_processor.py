@@ -33,7 +33,7 @@ class MachineLearningProcessor:
         
         for news in newslist:
 
-            if not news.topic is None:
+            if not news.topic is None: #if may topic na yung news na yun, break
                 break
 
             self.news_belongs_to_any_topic(news, topics)
