@@ -68,9 +68,19 @@ class News(db.Model):
     def __repr__(self):
         return '<Newslink: %r>' % self.link
 
-# TODO: Create a class InputNews that is subclass of News with an initializer of raw input string only channel, pubdate, link, topic_id can be null but news_words must be populated by this initializer
+# TODO: Create a class InputNews that is subclass of News with an initializer of raw input string only; channel, pubdate, link, topic_id can be null but news_words must be populated by this initializer
+class InputNews(News):
+    __tablename__ = "inputnews" 
+    raw_input_string = ""
 
-    
+    def __init__(self, raw_input_string):
+        News.__init__(self, "channel", "title", "pubdate", "link", "news_words")
+        self.raw_input_string = raw_input_string
+
+    def __repr__(self):
+        return '<InputNews: %r>' % self.raw_input_string
+
+
 class Topic(db.Model):
     __tablename__ = "topic"
     id = db.Column('topic_id', db.Integer, primary_key=True)

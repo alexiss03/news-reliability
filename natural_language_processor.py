@@ -8,7 +8,7 @@ def clean_data(paragraph):
 		#strips the stray characters or non-alphanumeric characters
 		paragraph = re.sub('[^0-9a-zA-Z\' ]+', '', paragraph) 
 
-		#removes the articles (the, a)
+		#removes the articles (the, a) and other noise words
 		paragraph = re.sub('(?i)(the|a|an|in|of|at|it|for|about|be|on|in)+', '', paragraph)
 		return paragraph
 
