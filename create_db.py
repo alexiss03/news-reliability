@@ -73,7 +73,6 @@ class InputNews(db.Model):
     __tablename__ = "inputnews" 
     
     id = db.Column('input_news_id', db.Integer, primary_key=True)
-    news_words = db.relationship("NewsWord", backref="news", lazy='dynamic')
     topic_id = db.Column(db.Integer, db.ForeignKey('topic.topic_id'))
     raw_input_string = db.Column(db.String(1000))
 

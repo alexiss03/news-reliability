@@ -1,4 +1,7 @@
 from create_db import db, News, Word
+#from news_scraper import NewsScraper
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 class DatabaseManager:
 	def update_word_db(wordfrequencies):
@@ -18,15 +21,40 @@ class DatabaseManager:
 
 
 	@staticmethod
-	def update_news_db(channel, title, pubdate, link, wordfrequencies):
+	def add_news_to_db(channel, title, pubdate, link, wordfrequencies):
 		newslink = News(channel, title, pubdate, link, wordfrequencies)
 		db.session.add(newslink)
 		db.session.commit()
 		print("News database successfully updated")
 
 	@staticmethod
-	def update_topic_db(newslist, word):
+	def add_topic_to_db(newslist, word):
 		topic = Topic(newslist, word)
 		db.session.add(topic)
 		db.session.commit()
 		print("Topic database successfully updated")
+
+
+	@staticmethod
+	def update_news_db():
+		channels = ['GMA', 'RAPPLER', 'CNN', 'MANILABULLETIN', 'PHILSTAR'];
+		rssurl = {'GMA': 'http://www.gmanetwork.com/news/rss/news/nation',
+			'RAPPLER': 'http://feeds.feedburner.com/rappler/',
+			'CNN': 'http://rss.cnn.com/rss/edition_asia.rss',
+			'MANILABULLETIN': 'http://mb.com.ph/mb-feed/', 
+			'PHILSTAR' : 'http://www.philstar.com/rss/nation'}
+
+		earliest_news = db.session.query(News).order_by(News.pubdate.desc()).first()
+		latest_news = db.session.query(News).order_by(News.pubdate.asc()).first()
+        
+		earliest_date = earliest_news.pubdate
+		latest_date = latest_news.pubdate
+
+		#scrape news from 6 months ago
+		six_months_before = date.today() - relativedelta(months =+ 6)
+		for i in range(0,5): 
+			print(1)
+			#NewsScraper.scrape(channels[i], rssurl[channels[i]], six_months_before, earliest_date);
+			#NewsScraper.scrape(channels[i], rssurl[channels[i]], latest_date, date.today);
+
+       

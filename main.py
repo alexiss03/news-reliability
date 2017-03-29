@@ -108,8 +108,7 @@ def scrapedata():
 
     print(channel);
     print(rssurl[channel]);
-    newsscraper = NewsScraper(channel)
-    newsscraper.scrape(channel, rssurl[channel]);
+    NewsScraper.scrape(channel, rssurl[channel], "", "");
 
     return "SEE LOGS " + request.form['channel'];
 
