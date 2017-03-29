@@ -8,7 +8,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
 
-# Table for many-to-many relationship
+# Table for many-to-many relationship (PARANG BALIKTAD YUNG topic_id AND word_id?)
 WordTopic = db.Table('WordTopic',
     db.Column('id', db.Integer, primary_key=True),
     db.Column('topic_id', db.Integer, db.ForeignKey('word.word_id')),
@@ -69,10 +69,12 @@ class News(db.Model):
         return '<Newslink: %r>' % self.link
 
 # TODO: Create a class InputNews that is subclass of News with an initializer of raw input string only; channel, pubdate, link, topic_id can be null but news_words must be populated by this initializer
-class InputNews(News):
+class InputNews(db.Model):
     __tablename__ = "inputnews" 
+    
+    id = db.Column('input_news_id', db.Integer, primary_key=True)
     raw_input_string = ""
-
+    
     def __init__(self, raw_input_string):
         News.__init__(self, "channel", "title", "pubdate", "link", "news_words")
         self.raw_input_string = raw_input_string
