@@ -9,7 +9,7 @@ def clean_data(paragraph):
 		paragraph = re.sub('[^0-9a-zA-Z\' ]+', '', paragraph) 
 
 		#removes the articles (the, a)
-		paragraph = re.sub('(?i)(the|a)+', '', paragraph)
+		paragraph = re.sub('(?i)(the|a|an|in|of|at|it|for|about|be|on|in)+', '', paragraph)
 		return paragraph
 
 
