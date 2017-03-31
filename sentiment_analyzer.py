@@ -28,6 +28,7 @@ class SentimentAnalyzer:
             sum = sum + sentiment_dictionary.get(word.word,0)
 
         mean = sum / len(news.news_words)
+        print("news" + news.news_id + "sentiment" + str(mean))
         return mean
 
 
@@ -40,6 +41,7 @@ class SentimentAnalyzer:
 
         mean = sum / len(topic.newslist)
         return mean
+
 
 
     def compute_variance_per_topic(self, topic):
@@ -59,11 +61,3 @@ class SentimentAnalyzer:
 
         variance = variance/len(topic.newslist)
         return variance
-
-
-
-
-
-
-
-
