@@ -60,8 +60,9 @@ def cnn_scraper(read):
 		newscontent = BeautifulSoup(str.join(u'\n',map(str,newscontent)), "html.parser").text
 		print(newscontent)
 		newswords = NLP.count_occurrence(newscontent) #count occurrence of words
-
 		return newswords
+	else:
+		return []
 
 
 def manilabulletin_scraper(read):
