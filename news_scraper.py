@@ -13,6 +13,7 @@ from functions import *
 from dateutil import parser
 from datetime import date
 from dateutil.relativedelta import relativedelta
+import datetime
 
 class NewsScraper:
 
@@ -22,16 +23,19 @@ class NewsScraper:
 		#print(rssfeed)
 
 		try:
-			limit = parser.parse(from_date).date()
+			from_date = parser.parse(from_date).date()
+			to_date = parser.parse(to_date).date()
 		except ValueError: #if the date is either empty or not valid date format
-			limit = datetime.datetime.today().date()
+			from_date = datetime.datetime.today().date()
+			to_date = datetime.datetime.today().date()
 
 		#print('limit' + str(limit))
-		#print(len(rssfeed.entries))
+		print("ENTRIES LENGTH: " + str(len(rssfeed.entries)))
 		#print(rssfeed)
 		#return;
 		for index, feed in enumerate(rssfeed.entries):
-
+			if(len(feed) == 0):  
+				continue;
 			summary = feed.summary #gets the news summary
 			title = feed.title #gets the news title
 			pubdate = feed.published #gets the date published
@@ -40,11 +44,11 @@ class NewsScraper:
 			pubdate = parser.parse(pubdate).date()
 			print('pubdate' + str(pubdate))
 
-			if pubdate < limit: 
-				print("LIMIT DATE REACHED")
-				break;
+			# if pubdate < from_date: 
+			# 	print("LIMIT DATE REACHED")
+			# 	break;
 
-			print("Scraping ...")
+			print(channel + " Scraping ...")
 
 			#checks if the newslink is already found in the database, if there is same entry in the db, then proceed to the next iteration
 			if(News.query.filter_by(link = link).first() is not None): 
@@ -76,11 +80,31 @@ class NewsScraper:
 	@staticmethod
 	def update_news_db():
 		channels = ['GMA', 'RAPPLER', 'CNN', 'MANILABULLETIN', 'PHILSTAR'];
-		rssurl = {'GMA': 'http://www.gmanetwork.com/news/rss/news/nation',
-			'RAPPLER': 'http://feeds.feedburner.com/rappler/',
-			'CNN': 'http://rss.cnn.com/rss/edition_asia.rss',
-			'MANILABULLETIN': 'http://mb.com.ph/mb-feed/', 
-			'PHILSTAR' : 'http://www.philstar.com/rss/nation'}
+		rssurl = {'GMA': ['http://www.gmanetwork.com/news/rss/news/nation',
+					'http://www.gmanetwork.com/news/rss/money',
+					'http://www.gmanetwork.com/news/rss/publicaffairs',
+					'http://www.gmanetwork.com/news/rss/newstv',
+					'http://www.gmanetwork.com/news/rss/sports',
+					'http://www.gmanetwork.com/news/rss/scitech'],
+				'RAPPLER': ['http://feeds.feedburner.com/rappler/'],
+				'CNN': ['http://rss.cnn.com/rss/edition_asia.rss',
+						'http://rss.cnn.com/rss/cnn_latest.rss',
+						'http://rss.cnn.com/rss/money_news_international.rss',
+						'http://rss.cnn.com/rss/edition_technology.rss',
+						'http://rss.cnn.com/rss/edition_sport.rss',
+						'http://rss.cnn.com/rss/edition_us.rss',
+						'http://rss.cnn.com/rss/edition_meast.rss',
+						'http://rss.cnn.com/rss/edition_europe.rss',
+						'http://rss.cnn.com/rss/edition_americas.rss',
+						'http://rss.cnn.com/rss/edition_world.rss',
+						'http://rss.cnn.com/rss/edition_africa.rss'],
+				'MANILABULLETIN': ['http://mb.com.ph/mb-feed/'], 
+				'PHILSTAR' : ['http://www.philstar.com/rss/nation',
+						'http://www.philstar.com/rss/breakingnews',
+						'http://www.philstar.com/rss/headlines',
+						'http://www.philstar.com/rss/opinion',
+						'http://www.philstar.com/rss/world',
+						'http://www.philstar.com/rss/business']}
 
 		earliest_news = db.session.query(News).order_by(News.pubdate.desc()).first()
 		latest_news = db.session.query(News).order_by(News.pubdate.asc()).first()
@@ -91,9 +115,11 @@ class NewsScraper:
 		#scrape news from 6 months ago
 		six_months_before = str(date.today() - relativedelta(months =+ 6))
 		for i in range(0,5): 
-			print(1)
-			NewsScraper.scrape(channels[i], rssurl[channels[i]], six_months_before, earliest_date);
-			NewsScraper.scrape(channels[i], rssurl[channels[i]], latest_date, date.today);
+			print(len(rssurl[channels[i]]))
+			for j in range(0, len(rssurl[channels[i]])):
+				#print(rssurl[channels[i]][j])
+				NewsScraper.scrape(channels[i], rssurl[channels[i]][j], six_months_before, earliest_date);
+				NewsScraper.scrape(channels[i], rssurl[channels[i]][j], latest_date, str(date.today));
 
        
 
