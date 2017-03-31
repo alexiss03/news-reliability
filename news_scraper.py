@@ -36,10 +36,13 @@ class NewsScraper:
 		for index, feed in enumerate(rssfeed.entries):
 			if(len(feed) == 0):  
 				continue;
-			summary = feed.summary #gets the news summary
-			title = feed.title #gets the news title
-			pubdate = feed.published #gets the date published
-			link = feed.links[0].href #gets the link
+			try:
+				summary = feed.summary #gets the news summary
+				title = feed.title #gets the news title
+				pubdate = feed.published #gets the date published
+				link = feed.links[0].href #gets the link
+			except:
+				continue;
 
 			pubdate = parser.parse(pubdate).date()
 			print('pubdate' + str(pubdate))
@@ -57,8 +60,11 @@ class NewsScraper:
 
 			print("Is there a news of the same link in the DB?")
 			print(News.query.filter_by(link = link).first())
-			with urllib.request.urlopen(link) as url:
-				read = url.read()
+			try:
+				with urllib.request.urlopen(link) as url:
+					read = url.read()
+			except:
+				continue;
 
 			print("Ready to scrape")
 			if(channel == 'GMA'):
