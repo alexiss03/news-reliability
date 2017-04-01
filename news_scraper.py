@@ -47,9 +47,9 @@ class NewsScraper:
 			pubdate = parser.parse(pubdate).date()
 			print('pubdate' + str(pubdate))
 
-			if pubdate < limit:
-				print("LIMIT DATE REACHED")
-				break;
+			# if pubdate < limit:
+			# 	print("LIMIT DATE REACHED")
+			# 	break;
 
 			print(channel + " Scraping ...")
 
