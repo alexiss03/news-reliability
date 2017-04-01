@@ -37,4 +37,4 @@ class NaturalLanguageProcessor:
 
 #NLP.countoccurrence("HIHIHIHIHH hello the The A a philippines ; hello; he;llo don't I'm hello wor;ld world don't cry 10$ , jejd; cried hello's HHHHI")
 #nlp.countoccurrence("The Ateneo Lady Eagles saw their 2-0 lead disappear, before hanging on to defeat the FEU Lady Tamaraws on Saturday, 25-20 25-22 17-25 21-25 15-8.")
-#clean_data("The red brown fox jups over the lazy dog a an then philippines");
+clean_data("The red brown fox jups over the lazy dog a an then philippines");
