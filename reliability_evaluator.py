@@ -120,28 +120,6 @@ class ReliabilityEvaluator:
             NewsScraper.scrape(channels[i], rssurl[channels[i]], date, "20170301");
 
 
-    def update_news_db(self):
-        channels = ['GMA', 'RAPPLER', 'CNN', 'MANILABULLETIN', 'PHILSTAR'];
-        rssurl = {'GMA': 'http://www.gmanetwork.com/news/rss/news/nation',
-            'RAPPLER': 'http://feeds.feedburner.com/rappler/',
-            'CNN': 'http://rss.cnn.com/rss/edition_asia.rss',
-            'MANILABULLETIN': 'http://mb.com.ph/mb-feed/', 
-            'PHILSTAR' : 'http://www.philstar.com/rss/nation'}
-
-        #scrape news from 6 months ago
-        for i in range(0,5): 
-            NewsScraper.scrape(channels[i], rssurl[channels[i]], date, "20170301");
-        earliest_news = db.session.query(News).order_by(News.pubdate.desc()).first()
-        latest_news = db.session.query(News).order_by(News.pubdate.asc()).first()
-        #news = News.query.order_by('pubdate').first()
-        earliest_date = earliest_news.pubdate
-        latest_date = latest_news.pubdate
-
-        #scrape_news_starting_from(earliest_date)
-        six_months_before = date.today() - relativedelta(months =+ 6)
-        print(six_months_before)
-
-
 re = ReliabilityEvaluator()
 rel = re.compute_for_reliability_score("Duterte President")
 print("rel" + str(rel))

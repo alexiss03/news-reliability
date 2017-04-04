@@ -35,6 +35,7 @@ def rappler_scraper(read):
 		newscontent = BeautifulSoup(str.join(u'\n',map(str,newscontent)), "html.parser").text
 		print("newscontent A")
 		newswords = NLP.count_occurrence(newscontent)
+		return newswords
 	else:
 		pattern = re.compile('var r4articleData = (.*?)$')
 		parser = htmlparser.HTMLParser()
@@ -51,7 +52,8 @@ def rappler_scraper(read):
 				print("newscontent B")
 
 				newswords = NLP.count_occurrence(newscontent) #count occurrence of words
-	return newswords;
+				return newswords;
+	return []
 
 def cnn_scraper(read):
 	soup = BeautifulSoup(read, "html.parser")
