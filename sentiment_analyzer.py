@@ -33,8 +33,8 @@ class SentimentAnalyzer:
         sum = 0
         count = 0
 
-        for word in news.news_words:
-            word_sentiment = sentiment_dictionary.get(word.word.word,0)
+        for news_word in news.news_words:
+            word_sentiment = sentiment_dictionary.get(news_word.word.word,0)
             sum = sum + word_sentiment
             count += 1
 
