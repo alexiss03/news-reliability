@@ -66,7 +66,7 @@ class News(db.Model):
         self.news_words = news_words
     
     def __repr__(self):
-        return '<Newslink: %r>' % self.link
+        return '<Newslink: %r>' % self.title
 
 
 # TODO: Create a class InputNews that is subclass of News with an initializer of raw input string only; channel, pubdate, link, topic_id can be null but news_words must be populated by this initializer
@@ -92,7 +92,7 @@ class Topic(db.Model):
     word = db.relationship('Word', secondary=WordTopic, backref='topics')
     
     def __init__(self, words):
-        self.words = words
+        self.word = words
         
     def __repr__(self):
         return '<Topic: %r>' % list(self.words)

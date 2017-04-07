@@ -5,59 +5,74 @@ sentiment_dictionary = {}
 class SentimentAnalyzer:
 
     def __init__(self):
-        for line in open('resources/word_sentiment_value.txt'):
-            word, score = line.split('\t')
+        for line in open('resources/word_sentiments_2.txt'):
+            word, score = line.split(' ')
             sentiment_dictionary[word] = int(score)
+
 
 
     def identify_reliability(self, news):
 
-        if news.topic == None or self.compute_variance_per_topic(news.topic) < 3:
+        variance_topic =  self.compute_variance_per_topic(news.topic)
+        if news.topic == None or variance_topic < 0.01:
             return -1
 
-        news_sentiment = self.compute_sentiment(news)
+        news_sentiment = self.compute_sentiment_news(news)
         topic_sentiment = self.compute_sentiment_per_topic(news.topic)
-        score_reliabiltiy = 10 - (abs(news_sentiment-topic_sentiment) * 2)
-        return score_reliabiltiy
+
+        print("average topic sentiment" + str(topic_sentiment))
+        print("input news sentiment" + str(news_sentiment))
+
+        score_reliability =  abs(topic_sentiment - news_sentiment) * 100
+
+        print("reliability score:" + str(score_reliability))
+        return score_reliability
 
 
-    def compute_sentiment(self, news):
+    def compute_sentiment_news(self, news):
         sum = 0
+        count = 0
 
         for word in news.news_words:
-            sum = sum + sentiment_dictionary.get(word.word,0)
+            word_sentiment = sentiment_dictionary.get(word.word.word,0)
+            sum = sum + word_sentiment
+            count += 1
 
-        mean = sum / len(news.news_words)
-        print("news" + news.news_id + "sentiment" + str(mean))
+        mean = 0
+        if count != 0:
+            mean = sum / count
         return mean
-
 
 
     def compute_sentiment_per_topic(self, topic):
-
         sum = 0
-        for news in topic.newslist:
-            sum = sum + self.compute_sentiment(news)
+        count = 0
+        topic_newslist = topic.newslist.all()
 
-        mean = sum / len(topic.newslist)
+        for news in topic_newslist:
+            sum = sum + self.compute_sentiment_news(news)
+            count += 1
+
+        mean = 0
+        if count != 0:
+            mean = sum / count
         return mean
 
 
-
     def compute_variance_per_topic(self, topic):
-
         score = 0
         scores = []
+        news_count = len(topic.newslist.all())
 
         for news in topic.newslist:
-            score = score + self.compute_sentiment(news)
+            score = score + self.compute_sentiment_news(news)
             scores.append(score)
 
-        mean = score / len(topic.newslist)
+        mean = score / len(topic.newslist.all())
 
 
         for score in scores:
-            variance = (score - mean)^2
+            variance = int((score - mean))^2
 
-        variance = variance/len(topic.newslist)
+        variance = variance/news_count
         return variance

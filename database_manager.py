@@ -28,8 +28,7 @@ class DatabaseManager:
 		print("News database successfully updated")
 
 	@staticmethod
-	def add_topic_to_db(newslist, word):
-		topic = Topic(newslist, word)
+	def add_topic_to_db(topic):
 		db.session.add(topic)
 		db.session.commit()
 		print("Topic database successfully updated")
@@ -57,4 +56,7 @@ class DatabaseManager:
 			#NewsScraper.scrape(channels[i], rssurl[channels[i]], six_months_before, earliest_date);
 			#NewsScraper.scrape(channels[i], rssurl[channels[i]], latest_date, date.today);
 
+	@staticmethod
+	def commit_db():
+		db.session.commit()
        
