@@ -2,3 +2,4 @@
 __pycache__/*
 create_db.pyc
 venv/*
+words.sqlite3

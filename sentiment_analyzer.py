@@ -19,13 +19,13 @@ class SentimentAnalyzer:
 
         news_sentiment = self.compute_sentiment_news(news)
         topic_sentiment = self.compute_sentiment_per_topic(news.topic)
-
-        print("average topic sentiment" + str(topic_sentiment))
-        print("input news sentiment" + str(news_sentiment))
-
         score_reliability =  abs(topic_sentiment - news_sentiment) * 100
 
-        print("reliability score:" + str(score_reliability))
+        print("")
+        print("average topic sentiment: " + str(topic_sentiment))
+        print("input news sentiment: " + str(news_sentiment))
+        print("reliability score: " + str(score_reliability))
+        print("")
         return score_reliability
 
 
