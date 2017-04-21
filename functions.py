@@ -28,6 +28,8 @@ def gma_scraper(read):
 			newswords = NLP.count_occurrence(newscontent) #count occurrence of words
 			return newswords;
 
+	return []
+
 def rappler_scraper(read):
 	soup = BeautifulSoup(read, "html.parser")
 	if soup.find("div", {"class":"storypage-divider desktop"}):
@@ -77,6 +79,7 @@ def manilabulletin_scraper(read):
 		newswords = NLP.count_occurrence(newscontent) #count occurrence of words
 		return newswords
 
+	return []
 
 def philstar_scraper(read):
 	soup = BeautifulSoup(read, "html.parser")
@@ -88,3 +91,5 @@ def philstar_scraper(read):
 
 		newswords = NLP.count_occurrence(newscontent) #count occurrence of words	
 		return newswords
+
+	return []
