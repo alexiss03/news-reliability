@@ -54,16 +54,19 @@ class News(db.Model):
     channel = db.Column(db.String(100)) #either GMA, ABS, RAPPLER, INQUIRER
     title = db.Column(db.String(100))
     pubdate = db.Column(db.String(100))
+    newscontent = db.Column(db.String(100000))
     link = db.Column(db.String(200)) #link of the news site
     news_words = db.relationship("NewsWord", backref="news", lazy='dynamic')
     topic_id = db.Column(db.Integer, db.ForeignKey('topic.topic_id'))
     
-    def __init__(self, channel, title, pubdate, link, news_words):
+    def __init__(self, channel, title, pubdate, link, news_words, newscontent):
         self.channel = channel
         self.title = title
         self.pubdate = pubdate
         self.link = link
-        self.news_words = news_words
+        if news_words:
+            self.news_words = news_words
+        self.newscontent = newscontent
     
     def __repr__(self):
         return '<Newslink: %r>' % self.title
@@ -96,8 +99,6 @@ class Topic(db.Model):
         
     def __repr__(self):
         return '<Topic: %r>' % list(self.words)
-    
-
 
 #print(Newslink.query.all())			
 #db.drop_all(bind=None)

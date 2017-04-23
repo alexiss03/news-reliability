@@ -21,8 +21,8 @@ class DatabaseManager:
 
 
 	@staticmethod
-	def add_news_to_db(channel, title, pubdate, link, wordfrequencies):
-		newslink = News(channel, title, pubdate, link, wordfrequencies)
+	def add_news_to_db(channel, title, pubdate, link, wordfrequencies, newscontent):
+		newslink = News(channel, title, pubdate, link, wordfrequencies, newscontent)
 		db.session.add(newslink)
 		db.session.commit()
 		print("News database successfully updated")

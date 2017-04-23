@@ -26,9 +26,9 @@ def gma_scraper(read):
 			newscontent = BeautifulSoup(x["story"]["main"], "html.parser").text #gets all the text excluding the html tags		
 			print(newscontent)
 			newswords = NLP.count_occurrence(newscontent) #count occurrence of words
-			return newswords;
+			return (newswords, newscontent);
 
-	return []
+	return (None, None)
 
 def rappler_scraper(read):
 	soup = BeautifulSoup(read, "html.parser")
@@ -37,7 +37,7 @@ def rappler_scraper(read):
 		newscontent = BeautifulSoup(str.join(u'\n',map(str,newscontent)), "html.parser").text
 		print("newscontent A")
 		newswords = NLP.count_occurrence(newscontent)
-		return newswords
+		return (newswords, newscontent)
 	else:
 		pattern = re.compile('var r4articleData = (.*?)$')
 		parser = htmlparser.HTMLParser()
@@ -54,8 +54,8 @@ def rappler_scraper(read):
 				print("newscontent B")
 
 				newswords = NLP.count_occurrence(newscontent) #count occurrence of words
-				return newswords;
-	return []
+				return (newswords, newscontent)
+	return (None, None)
 
 def cnn_scraper(read):
 	soup = BeautifulSoup(read, "html.parser")
@@ -64,9 +64,9 @@ def cnn_scraper(read):
 		newscontent = BeautifulSoup(str.join(u'\n',map(str,newscontent)), "html.parser").text
 		print(newscontent)
 		newswords = NLP.count_occurrence(newscontent) #count occurrence of words
-		return newswords
+		return (newswords, newscontent)
 	else:
-		return []
+		return (None, None)
 
 
 def manilabulletin_scraper(read):
@@ -77,9 +77,9 @@ def manilabulletin_scraper(read):
 		newscontent = BeautifulSoup(str.join(u'\n',map(str,newscontent)), "html.parser").text
 		print(newscontent)
 		newswords = NLP.count_occurrence(newscontent) #count occurrence of words
-		return newswords
+		return (newswords, newscontent)
 
-	return []
+	return (None, None)
 
 def philstar_scraper(read):
 	soup = BeautifulSoup(read, "html.parser")
@@ -90,6 +90,6 @@ def philstar_scraper(read):
 		print(newscontent)
 
 		newswords = NLP.count_occurrence(newscontent) #count occurrence of words	
-		return newswords
+		return (newswords, newscontent)
 
-	return []
+	return (None, None)

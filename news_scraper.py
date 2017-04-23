@@ -68,19 +68,19 @@ class NewsScraper:
 
 			print("Ready to scrape")
 			if(channel == 'GMA'):
-				wordfrequencies = gma_scraper(read)
+				(wordfrequencies, newscontent) = gma_scraper(read)
 			elif(channel == 'RAPPLER'):
-				wordfrequencies = rappler_scraper(read)
+				(wordfrequencies, newscontent) = rappler_scraper(read)
 			elif(channel == 'CNN'):
-				wordfrequencies = cnn_scraper(read)
+				(wordfrequencies, newscontent) = cnn_scraper(read)
 			elif(channel == 'MANILABULLETIN'):
-				wordfrequencies = manilabulletin_scraper(read)
+				(wordfrequencies, newscontent) = manilabulletin_scraper(read)
 			elif(channel == 'PHILSTAR'):
-				wordfrequencies = philstar_scraper(read)
+				(wordfrequencies, newscontent) = philstar_scraper(read)
 
 
 			#Adding to News database
-			DB.add_news_to_db(channel, title, pubdate, link, wordfrequencies)
+			DB.add_news_to_db(channel, title, pubdate, link, wordfrequencies, newscontent)
 
 
 	@staticmethod
