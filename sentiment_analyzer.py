@@ -13,11 +13,11 @@ class SentimentAnalyzer:
 
     def identify_reliability(self, news):
 
-        variance_topic =  self.compute_variance_per_topic(news.topic)
+        news_sentiment, variance_topic =  self.compute_sentiment_variance_per_topic(news.topic)
         if news.topic == None or variance_topic < 0.01:
             return -1
 
-        news_sentiment = self.compute_sentiment_news(news)
+        #news_sentiment = self.compute_sentiment_news(news)
         topic_sentiment = self.compute_sentiment_per_topic(news.topic)
         score_reliability =  abs(topic_sentiment - news_sentiment) * 100
 
@@ -63,6 +63,32 @@ class SentimentAnalyzer:
         score = 0
         scores = []
         news_count = len(topic.newslist.all())
+        
+        sum = 0
+        count = 0
+        topic_newslist = topic.newslist.all()
+        
+
+        for news in topic.newslist:
+            score = score + self.compute_sentiment_news(news)
+            scores.append(score)
+            
+            sum = sum + self.compute_sentiment_news(news)
+            count += 1
+
+        mean = score / len(topic.newslist.all())
+
+
+        for score in scores:
+            variance = int((score - mean))^2
+
+        variance = variance/news_count
+        return variance
+    
+    def compute_sentiment_variance_per_topic(self, topic):
+        score = 0
+        scores = []
+        news_count = len(topic.newslist.all())
 
         for news in topic.newslist:
             score = score + self.compute_sentiment_news(news)
@@ -75,4 +101,9 @@ class SentimentAnalyzer:
             variance = int((score - mean))^2
 
         variance = variance/news_count
-        return variance
+        
+        mean = 0
+        if count != 0:
+            mean = sum / count
+        
+        return (mean, variance)
