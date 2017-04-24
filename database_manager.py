@@ -22,6 +22,8 @@ class DatabaseManager:
 
 	@staticmethod
 	def add_news_to_db(channel, title, pubdate, link, wordfrequencies, newscontent):
+		if newscontent is None:
+		    return
 		newslink = News(channel, title, pubdate, link, wordfrequencies, newscontent)
 		db.session.add(newslink)
 		db.session.commit()

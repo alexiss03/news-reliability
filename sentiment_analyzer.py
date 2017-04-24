@@ -1,4 +1,5 @@
-from create_db import News, Word, Topic
+from create_db import db, News, Word, Topic
+from database_manager import DatabaseManager as DB
 
 sentiment_dictionary = {}
 
@@ -9,17 +10,15 @@ class SentimentAnalyzer:
             word, score = line.split(' ')
             sentiment_dictionary[word] = int(score)
 
-
-
     def identify_reliability(self, news):
-        news_sentiment, variance_topic =  self.compute_sentiment_variance_per_topic(news.topic)
+        mean_topic, variance_topic =  self.compute_sentiment_variance_per_topic(news.topic)
 
         if news.topic == None or variance_topic < 0.01:
             return -1
 
-        #news_sentiment = self.compute_sentiment_news(news)
+        news_sentiment = self.compute_sentiment_news(news)
         topic_sentiment = self.compute_sentiment_per_topic(news.topic)
-        score_reliability =  abs(topic_sentiment - news_sentiment) * 100
+        score_reliability = 100 - abs(topic_sentiment - news_sentiment) * 100
 
         print("")
         print("average topic sentiment: " + str(topic_sentiment))
@@ -29,13 +28,13 @@ class SentimentAnalyzer:
         return score_reliability
     
     def identify_higher_than_topic_sentiment(self, news):
-        news_sentiment, variance_topic =  self.compute_sentiment_variance_per_topic(news.topic)
+        mean_topic, variance_topic = self.compute_sentiment_variance_per_topic(news.topic)
         if news.topic == None or variance_topic < 0.01:
             return 0
 
-        #news_sentiment = self.compute_sentiment_news(news)
+        news_sentiment = self.compute_sentiment_news(news)
         topic_sentiment = self.compute_sentiment_per_topic(news.topic)
-        score_reliability =  abs(topic_sentiment - news_sentiment) * 100
+        score_reliability =  100 - abs(topic_sentiment - news_sentiment) * 100
 
         print("")
         print("average topic sentiment: " + str(topic_sentiment))
@@ -43,7 +42,7 @@ class SentimentAnalyzer:
         print("reliability score: " + str(score_reliability))
         print("")
         
-        if topic_sentiment < news_sentiment:
+        if score_reliability > 99:
             return 1
         else:
             return 0
@@ -52,11 +51,15 @@ class SentimentAnalyzer:
     def compute_sentiment_news(self, news):
         sum = 0
         count = 0
+        
+        if not news.sentiment is None:
+            return news.sentiment
 
         for news_word in news.news_words:
             word_sentiment = sentiment_dictionary.get(news_word.word.word,0)
             sum = sum + word_sentiment
             count += 1
+            #print("word sentiment" + str(word_sentiment))
 
         mean = 0
         if count != 0:
@@ -73,8 +76,11 @@ class SentimentAnalyzer:
         topic_newslist = topic.newslist.all()
 
         for news in topic_newslist:
+            sentiment = self.compute_sentiment_news(news)
+            #print("news in topic count" + str(count) + " " + str(sentiment))
             sum = sum + self.compute_sentiment_news(news)
             count += 1
+
 
         mean = 0
         if count != 0:
@@ -86,10 +92,18 @@ class SentimentAnalyzer:
         score = 0
         scores = []
         news_count = len(topic.newslist.all())
+        
+        sum = 0
+        count = 0
+        topic_newslist = topic.newslist.all()
+        
 
         for news in topic.newslist:
             score = score + self.compute_sentiment_news(news)
             scores.append(score)
+            
+            sum = sum + self.compute_sentiment_news(news)
+            count += 1
 
         mean = score / len(topic.newslist.all())
 
@@ -103,22 +117,19 @@ class SentimentAnalyzer:
     
     def compute_sentiment_variance_per_topic(self, topic):
         score = 0
-        count = len(topic.newslist.all())
+
         scores = []
         news_count = len(topic.newslist.all())
-        
-        mean = 0
 
         for news in topic.newslist:
             score = score + self.compute_sentiment_news(news)
             scores.append(score)
 
+        mean = score / news_count
+
         for score in scores:
             variance = int((score - mean))^2
 
         variance = variance/news_count
-        
-        if count != 0:
-            mean = score / count
         
         return (mean, variance)

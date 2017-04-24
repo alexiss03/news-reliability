@@ -80,11 +80,11 @@ class InputNews(db.Model):
     id = db.Column('input_news_id', db.Integer, primary_key=True)
     topic_id = db.Column(db.Integer, db.ForeignKey('topic.topic_id'))
     sentiment = db.Column(db.Float)
-    raw_input_string = db.Column(db.String(1000))
+    content = db.Column(db.String(1000))
 
-    def __init__(self, raw_input_string, news_words):
-        News.__init__(self, "channel", "title", "pubdate", "link", news_words)
-        self.raw_input_string = raw_input_string
+    def __init__(self, content, news_words):
+        News.__init__(self, "channel", "title", "pubdate", "link", news_words, content)
+        self.content = content
 
     def __repr__(self):
         return '<InputNews: %r>' % self.raw_input_string
