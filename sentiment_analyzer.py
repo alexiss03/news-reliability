@@ -103,7 +103,7 @@ class SentimentAnalyzer:
         variance = variance/news_count
         
         mean = 0
-        if count != 0:
-            mean = sum / count
+        if news_count != 0:
+            mean = score / news_count
         
         return (mean, variance)
