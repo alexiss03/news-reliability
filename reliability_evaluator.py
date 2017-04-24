@@ -39,6 +39,9 @@ class ReliabilityEvaluator:
     def assert_news_belong_to_topic(self, news, topic):
         match_words = 0
 
+        if not news.topic_id is None:
+            return True
+        
         for news_word in sorted(news.news_words)[:number_of_top_words]:
             for topic_word in topic.words:
                 if news_word.word.word == topic_word.word:
@@ -51,8 +54,7 @@ class ReliabilityEvaluator:
         else:
             return False
 
-
-
+        
     def find_news_a_topic(self, news, topics):
         for topic in topics:
             if self.assert_news_belong_to_topic(news,topic):
@@ -120,7 +122,8 @@ class ReliabilityEvaluator:
         for input_news in input_news_list:
             count += 1
             if not self.identify_topic_for_news(input_news) == None:
-                if self.sentiment_analyzer.identify_reliability(input_news) > 0:
+                if self.sentiment_analyzer.identify_higher_than_topic_sentiment(input_news):
+
                     with_positive_reliability += 1 
                 with_topic_count += 1
         
@@ -138,6 +141,8 @@ re = ReliabilityEvaluator()
 #News.query.delete()
 #print("topics" + str(Topic.query.all()))
 #re.generate_topics()
-re.get_topics_of_news_content()
 
-#re.scrape_news_starting_from("01-01-2017")
+#re.get_topics_of_news_content()
+
+
+re.scrape_news_starting_from("01-01-2017")

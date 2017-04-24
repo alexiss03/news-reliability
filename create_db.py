@@ -58,6 +58,7 @@ class News(db.Model):
     link = db.Column(db.String(200)) #link of the news site
     news_words = db.relationship("NewsWord", backref="news", lazy='dynamic')
     topic_id = db.Column(db.Integer, db.ForeignKey('topic.topic_id'))
+    sentiment = db.Column(db.Float)
     
     def __init__(self, channel, title, pubdate, link, news_words, newscontent):
         self.channel = channel
@@ -78,6 +79,7 @@ class InputNews(db.Model):
     
     id = db.Column('input_news_id', db.Integer, primary_key=True)
     topic_id = db.Column(db.Integer, db.ForeignKey('topic.topic_id'))
+    sentiment = db.Column(db.Float)
     raw_input_string = db.Column(db.String(1000))
 
     def __init__(self, raw_input_string, news_words):
