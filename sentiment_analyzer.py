@@ -56,7 +56,7 @@ class SentimentAnalyzer:
             return news.sentiment
 
         for news_word in news.news_words:
-            word_sentiment = sentiment_dictionary.get(news_word.word.word,0)
+            word_sentiment = sentiment_dictionary.get(news_word.word.word.lower(),0)
             sum = sum + word_sentiment
             count += 1
             #print("word sentiment" + str(word_sentiment))

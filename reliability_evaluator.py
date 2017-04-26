@@ -44,7 +44,7 @@ class ReliabilityEvaluator:
         
         for news_word in sorted(news.news_words)[:number_of_top_words]:
             for topic_word in topic.words:
-                if news_word.word.word == topic_word.word:
+                if news_word.word.word.lower() == topic_word.word.lower():
                     match_words +=1
 
         if match_words >= minimum_match_word:
