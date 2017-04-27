@@ -14,7 +14,6 @@ WordTopic = db.Table('WordTopic',
     db.Column('topic_id', db.Integer, db.ForeignKey('word.word_id')),
     db.Column('word_id', db.Integer, db.ForeignKey('topic.topic_id')))
 
-
 class Word(db.Model):
     __tablename__ = "word"
     id = db.Column("word_id", db.Integer, primary_key=True, autoincrement=True)
@@ -81,10 +80,14 @@ class InputNews(db.Model):
     topic_id = db.Column(db.Integer, db.ForeignKey('topic.topic_id'))
     sentiment = db.Column(db.Float)
     content = db.Column(db.String(1000))
+    pubdate = db.Column(db.String(100))
+    link = db.Column(db.String(200)) #link of the news site
 
-    def __init__(self, content, news_words):
-        News.__init__(self, "channel", "title", "pubdate", "link", news_words, content)
+    def __init__(self,  pubdate, link, content, news_words):
+        News.__init__(self, "channel", "title", pubdate, link, news_words, content)
         self.content = content
+        self.pubdate = pubdate
+        self.link = link
 
     def __repr__(self):
         return '<InputNews: %r>' % self.raw_input_string
