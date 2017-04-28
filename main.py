@@ -10,8 +10,11 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from news_scraper import NewsScraper 
-from create_db import db, News, Word
+from create_db import db, News, Word, InputNews
+from database_manager import DatabaseManager as DB
 from functions import *
+from dateutil import parser
+from datetime import date
 #from sklearn.feature_extraction.text import TfidfVectorizer
 #import numpy
 
@@ -58,7 +61,7 @@ def check():
 
     print(fbname);
     user= fbname;
-    
+
     # You'll need an access token here to do anything. You can get a temporary one
     # here: https://developers.facebook.com/tools/explorer/
     access_token = get_fb_token()
@@ -66,7 +69,7 @@ def check():
 
     graph = facebook.GraphAPI(access_token)
     profile = graph.get_object(user)
-    posts = graph.get_connections(profile['id'], 'posts', fields='id, message, created_time, link')
+    posts = graph.get_connections(profile['id'], 'posts', since='2017-04-01', until='2017-04-06', limit=100, fields='id, message, created_time, link')
     print(posts)
     #posts = graph.get_connections(profile['id'], 'url')
 
@@ -86,9 +89,23 @@ def check():
 
     #get all posts which are news related, checks if the words are used formally, and no grammar issues
     for post in posts['data']:
-        #print(post);
+        print(post);
         if('message' in list(post)):  #only include 'message' not story. message are the one the user posted. 
             post['message'] = re.sub(r'([^a-zA-Z\d\s])+', '', post['message']); #remove stray characters
+            
+            #check if the post['message'] already in the page
+            if(InputNews.query.filter_by(pubdate = post['created_time']).first() is not None): 
+                print("Input News article is already found in the Input News DB")
+                continue;
+
+            #pubdate = parser.parse(post['created_by']).date();
+            pubdate = post['created_time']
+            try:
+                link = post['link'];
+            except Exception:
+                link = "no link"
+
+            DB.add_input_news_to_db(pubdate, link, post['message']);
             #TODO: remove meaningless words, typo, etc.
         #print("#########################");
         
@@ -133,9 +150,13 @@ def deletedb():
 def get_fb_token():           
     payload = {'grant_type': 'client_credentials', 'client_id': os.environ['APP_ID'], 'client_secret': os.environ['APP_SECRET']}
     file = requests.post('https://graph.facebook.com/oauth/access_token?', params = payload)
-    #print file.text #to test what the FB api responded with    
-    result = file.text.split("=")[1]
+    print(file.text) #to test what the FB api responded with    
+    try:
+        result = file.text.split("=")[1]
+    except Exception:
+        result = file.json()["access_token"];
     #print file.text #to test the TOKEN
+    #print(result);
     return result
 
 
@@ -144,6 +165,6 @@ def get_fb_token():
 if __name__ == "__main__":
     app.run()
 
-#app.run(debug=True)
-#app.run(port=8082)
+app.run(debug=True)
+app.run(port=8082)
 

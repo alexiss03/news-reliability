@@ -16,7 +16,7 @@ class ReliabilityEvaluator:
     sentiment_analyzer = SentimentAnalyzer()
 
     def compute_for_reliability_score(self, input_string):
-        input_news = InputNews(input_string, NLP.count_occurrence(input_string))
+        input_news = InputNews("pubdate", "link", input_string, NLP.count_occurrence(input_string))
 
         if not self.identify_topic_for_news(input_news) == None:
             reliability = self.sentiment_analyzer.identify_reliability(input_news)
@@ -132,7 +132,7 @@ class ReliabilityEvaluator:
         return
 
 re = ReliabilityEvaluator()
-#rel = re.compute_for_reliability_score("A federal form of government may be the last chance for the Philippines to resolve the decades-long conflict in Mindanao, former Chief Justice Reynato S. Puno said Monday.  Hindi masosolve 'yan if we have a unitary form of government, dahil ang dinedemand ng Muslims self rule, hindi delegated rule. Mabibigay mo lang 'yan under a federal form of government, Puno told reporters on the sidelines of a meeting of business groups in Makati City.  Part of the meeting was the Employers Confederation of the Philippines, Management Association of the Philippines, Makati Business Club and Philippine Chamber of Commerce and Industry.  A federal government may be the last chance to address concerns, or risk having a siege in Mindanao, according to the former chief justice.  Kung hindi pa natin mabigay 'yan – hindi pa nabibigay ng past Presidents natin – baka tuloy-tuloy na silang umalis. And that is a big, big problem, he said.  'Yan talagang maapektuhan tayong lahat niyan. Politically, economically, socially, he added.  President Rodrigo R. Duterte in December urged House Speaker Pantaleon Alvarez to speed up a Charter Change that would lead to a federal form of government. — VDS, GMA News")
+rel = re.compute_for_reliability_score("A federal form of government may be the last chance for the Philippines to resolve the decades-long conflict in Mindanao, former Chief Justice Reynato S. Puno said Monday.  Hindi masosolve 'yan if we have a unitary form of government, dahil ang dinedemand ng Muslims self rule, hindi delegated rule. Mabibigay mo lang 'yan under a federal form of government, Puno told reporters on the sidelines of a meeting of business groups in Makati City.  Part of the meeting was the Employers Confederation of the Philippines, Management Association of the Philippines, Makati Business Club and Philippine Chamber of Commerce and Industry.  A federal government may be the last chance to address concerns, or risk having a siege in Mindanao, according to the former chief justice.  Kung hindi pa natin mabigay 'yan – hindi pa nabibigay ng past Presidents natin – baka tuloy-tuloy na silang umalis. And that is a big, big problem, he said.  'Yan talagang maapektuhan tayong lahat niyan. Politically, economically, socially, he added.  President Rodrigo R. Duterte in December urged House Speaker Pantaleon Alvarez to speed up a Charter Change that would lead to a federal form of government. — VDS, GMA News")
 #rel = re.compute_for_reliability_score("government government government government government government government government government government government government government  Philippines Duterte Manila Philippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte Manila")
 #print("word" + str(WordTopic.query.all()))
 

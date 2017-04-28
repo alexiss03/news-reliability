@@ -1,7 +1,8 @@
-from create_db import db, News, Word
+from create_db import db, News, Word, InputNews
 #from news_scraper import NewsScraper
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from natural_language_processor import NaturalLanguageProcessor as NLP
 
 class DatabaseManager:
 	def update_word_db(wordfrequencies):
@@ -29,11 +30,22 @@ class DatabaseManager:
 		db.session.commit()
 		print("News database successfully updated")
 
+
+	@staticmethod
+	def add_input_news_to_db(pubdate, link, newscontent):
+		if newscontent is None:
+			return
+		inputnews = InputNews(pubdate, link, newscontent, NLP.count_occurrence(newscontent));
+		db.session.add(inputnews)
+		db.session.commit()
+		print("Input News database successfully updated")
+
 	@staticmethod
 	def add_topic_to_db(topic):
 		db.session.add(topic)
 		db.session.commit()
 		print("Topic database successfully updated")
+
 
 
 	@staticmethod
