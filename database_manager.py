@@ -3,6 +3,7 @@ from create_db import db, News, Word, InputNews
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from natural_language_processor import NaturalLanguageProcessor as NLP
+from sqlalchemy import update
 
 class DatabaseManager:
 	def update_word_db(wordfrequencies):
@@ -29,6 +30,14 @@ class DatabaseManager:
 		db.session.add(newslink)
 		db.session.commit()
 		print("News database successfully updated")
+
+	def update_input_news_wordfrequencies(input_news_id, wordfrequencies):
+		input_news = db.session.query(InputNews).filter(input_news_id==input_news_id).first()
+		print("input news" + str(input_news.news_words.first()))
+		input_news.news_words = wordfrequencies
+		#print("word frequencies:" + str(wordfrequencies))
+		db.session.commit()
+		print("Input News database successfully updated")
 
 
 	@staticmethod

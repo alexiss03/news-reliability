@@ -16,7 +16,17 @@ class ReliabilityEvaluator:
     sentiment_analyzer = SentimentAnalyzer()
 
     def compute_for_reliability_score(self, input_string):
-        input_news = InputNews("pubdate", "link", input_string, NLP.count_occurrence(input_string))
+        input_news = News("pubdate", "link", input_string, NLP.count_occurrence(input_string))
+
+        if not self.identify_topic_for_news(input_news) == None:
+            reliability = self.sentiment_analyzer.identify_reliability(input_news)
+            return reliability
+        else:
+            print("No topic")
+            return None
+
+    def compute_for_reliability_score_input_news(self, input_string):
+        input_news = InputNews("pubdate", "link", input_string, NLP.input_count_occurrence(input_string))
 
         if not self.identify_topic_for_news(input_news) == None:
             reliability = self.sentiment_analyzer.identify_reliability(input_news)
@@ -110,6 +120,21 @@ class ReliabilityEvaluator:
         DB.commit_db()
         return topics
 
+    def generate_topics_input_news(self):
+        topics = []
+        count = 0
+
+        newslist = InputNews.query.all()
+
+        for news in newslist:
+            count += 1
+            if not news.topic is None:
+                continue
+            print(self.find_news_a_topic(news, topics))
+
+        DB.commit_db()
+        return topics
+
     def get_news_without_topic(self):
         return News.query.filter_by(topic = None).all()
     
@@ -131,18 +156,48 @@ class ReliabilityEvaluator:
         print("With positive topic count " + str(with_positive_reliability) + " of " + str(count))
         return
 
+    def get_topics_of_input_news_content(self):
+        input_news_list = InputNews.query.all()
+        count = 0
+        with_topic_count = 0
+        with_positive_reliability = 0
+        
+        for input_news in input_news_list:
+            count += 1
+            if not self.identify_topic_for_news(input_news) == None:
+                if self.sentiment_analyzer.identify_higher_than_topic_sentiment(input_news):
+                    with_positive_reliability += 1
+                with_topic_count += 1
+        
+        print("With topic count " + str(with_topic_count) + " of " + str(count))
+        print("With positive topic count " + str(with_positive_reliability) + " of " + str(count))
+        return
+    
+    def generate_news_word_for_input_news(self, input_news_id, newscontent):
+        newswords = NLP.input_count_occurrence(newscontent)
+        DB.update_input_news_wordfrequencies(input_news_id, newswords)
+        DB.commit_db()
+        return
+
+    
 re = ReliabilityEvaluator()
-rel = re.compute_for_reliability_score("A federal form of government may be the last chance for the Philippines to resolve the decades-long conflict in Mindanao, former Chief Justice Reynato S. Puno said Monday.  Hindi masosolve 'yan if we have a unitary form of government, dahil ang dinedemand ng Muslims self rule, hindi delegated rule. Mabibigay mo lang 'yan under a federal form of government, Puno told reporters on the sidelines of a meeting of business groups in Makati City.  Part of the meeting was the Employers Confederation of the Philippines, Management Association of the Philippines, Makati Business Club and Philippine Chamber of Commerce and Industry.  A federal government may be the last chance to address concerns, or risk having a siege in Mindanao, according to the former chief justice.  Kung hindi pa natin mabigay 'yan – hindi pa nabibigay ng past Presidents natin – baka tuloy-tuloy na silang umalis. And that is a big, big problem, he said.  'Yan talagang maapektuhan tayong lahat niyan. Politically, economically, socially, he added.  President Rodrigo R. Duterte in December urged House Speaker Pantaleon Alvarez to speed up a Charter Change that would lead to a federal form of government. — VDS, GMA News")
+re.get_topics_of_input_news_content()
+
+#input_news_list = InputNews.query.all()
+#for input_news in input_news_list:
+#    re.compute_for_reliability_score_input_news(input_news.content)
+    
+#rel = re.compute_for_reliability_score("A federal form of government may be the last chance for the Philippines to resolve the decades-long conflict in Mindanao, former Chief Justice Reynato S. Puno said Monday.  Hindi masosolve 'yan if we have a unitary form of government, dahil ang dinedemand ng Muslims self rule, hindi delegated rule. Mabibigay mo lang 'yan under a federal form of government, Puno told reporters on the sidelines of a meeting of business groups in Makati City.  Part of the meeting was the Employers Confederation of the Philippines, Management Association of the Philippines, Makati Business Club and Philippine Chamber of Commerce and Industry.  A federal government may be the last chance to address concerns, or risk having a siege in Mindanao, according to the former chief justice.  Kung hindi pa natin mabigay 'yan – hindi pa nabibigay ng past Presidents natin – baka tuloy-tuloy na silang umalis. And that is a big, big problem, he said.  'Yan talagang maapektuhan tayong lahat niyan. Politically, economically, socially, he added.  President Rodrigo R. Duterte in December urged House Speaker Pantaleon Alvarez to speed up a Charter Change that would lead to a federal form of government. — VDS, GMA News")
 #rel = re.compute_for_reliability_score("government government government government government government government government government government government government government  Philippines Duterte Manila Philippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte ManilaPhilippines Duterte Manila")
 #print("word" + str(WordTopic.query.all()))
 
 #Topic.query.delete()
-#db.session.commit()
 #News.query.delete()
-#print("topics" + str(Topic.query.all()))
-#re.generate_topics()
-re.get_topics_of_news_content()
-#re.get_topics_of_news_content()
+#db.session.commit()
 
+#re.generate_topics()
+#re.generate_topics_input_news()
+
+#re.get_topics_of_news_content()
 
 #re.scrape_news_starting_from("01-01-2017")

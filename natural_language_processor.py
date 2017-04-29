@@ -1,6 +1,6 @@
 import nltk, re
 from nltk.probability import FreqDist
-from create_db import db, News, Word, NewsWord
+from create_db import db, News, Word, NewsWord, InputNewsWord, InputWord
 from collections import Counter
 import enchant
 
@@ -29,6 +29,22 @@ class NaturalLanguageProcessor:
 			if(dictionary.check(i[0]) or i[0].istitle() or i[0].isupper()): 
 				thisword = Word(i[0]);
 				newsword = NewsWord(thisword, i[1])
+				wordfrequencies.append(newsword)
+
+		return wordfrequencies
+
+	def input_count_occurrence(paragraph): #no self in the parameter since this is a static method
+		#clean/remove the stray characters in the text
+		paragraph = clean_data(paragraph)
+
+		dictionary = enchant.Dict('en_US');
+		wordfrequencies = []
+		occurrence = Counter(paragraph.split())
+		for i in occurrence.items():
+			#if English or a Proper Noun (capitalized)
+			if(dictionary.check(i[0]) or i[0].istitle() or i[0].isupper()):
+				thisword = InputWord(i[0]);
+				newsword = InputNewsWord(thisword, i[1])
 				wordfrequencies.append(newsword)
 
 		return wordfrequencies

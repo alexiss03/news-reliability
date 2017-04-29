@@ -30,11 +30,13 @@ class SentimentAnalyzer:
     def identify_higher_than_topic_sentiment(self, news):
         mean_topic, variance_topic = self.compute_sentiment_variance_per_topic(news.topic)
         if news.topic == None or variance_topic < 0.01:
+            print("No topic assigned")
             return 0
+
 
         news_sentiment = self.compute_sentiment_news(news)
         topic_sentiment = self.compute_sentiment_per_topic(news.topic)
-        score_reliability =  100 - abs(topic_sentiment - news_sentiment) * 100
+        score_reliability =  100 - abs(topic_sentiment - news_sentiment) * 10000
 
         print("")
         print("average topic sentiment: " + str(topic_sentiment))
@@ -42,7 +44,7 @@ class SentimentAnalyzer:
         print("reliability score: " + str(score_reliability))
         print("")
         
-        if score_reliability > 99:
+        if news_sentiment > topic_sentiment:
             return 1
         else:
             return 0
@@ -57,17 +59,18 @@ class SentimentAnalyzer:
 
         for news_word in news.news_words:
             word_sentiment = sentiment_dictionary.get(news_word.word.word.lower(),0)
+            word_sentiment = news_word.word_count * word_sentiment
             sum = sum + word_sentiment
-            count += 1
+            count += news_word.word_count
             #print("word sentiment" + str(word_sentiment))
 
         mean = 0
         if count != 0:
             mean = sum / count
             
-        news.sentiment = mean
+        news.sentiment = sum
         DB.commit_db()
-        return mean
+        return sum
 
 
     def compute_sentiment_per_topic(self, topic):
