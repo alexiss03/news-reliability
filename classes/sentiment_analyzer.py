@@ -4,9 +4,8 @@ from database_manager import DatabaseManager as DB
 sentiment_dictionary = {}
 
 class SentimentAnalyzer:
-
     def __init__(self):
-        for line in open('resources/word_sentiments_2.txt'):
+        for line in open('../resources/word_sentiments_2.txt'):
             word, score = line.split(' ')
             sentiment_dictionary[word] = int(score)
 
@@ -22,7 +21,6 @@ class SentimentAnalyzer:
         print("")
         print("average topic sentiment: " + str(topic_sentiment))
         print("input news sentiment: " + str(news_sentiment))
-        print("reliability score: " + str(score_reliability))
         print("")
         
         if news_sentiment > topic_sentiment:
